@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.text.Font?>
+<?import org.controlsfx.control.ListSelectionView?>
+
+<AnchorPane fx:id="MainPane" prefHeight="800.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.nvm.MainApp.MainWindowController">
+   <children>
+      <AnchorPane fx:id="GameControlsPane" layoutX="536.0" layoutY="496.0" prefHeight="250.0" prefWidth="200.0">
+         <children>
+            <Label layoutX="34.0" layoutY="-1.0" text="Game Controls">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Button layoutX="59.0" layoutY="45.0" mnemonicParsing="false" onAction="#startGameOnAction" prefHeight="25.0" prefWidth="85.0" text="Start Game" />
+            <Button layoutX="59.0" layoutY="85.0" mnemonicParsing="false" onAction="#pauseGameOnAction" prefHeight="25.0" prefWidth="85.0" text="Pause Game" />
+            <Button layoutX="59.0" layoutY="125.0" mnemonicParsing="false" onAction="#endGameOnAction" prefHeight="25.0" prefWidth="85.0" text="Stop Game" />
+         </children>
+      </AnchorPane>
+      <AnchorPane prefHeight="265.0" prefWidth="335.0" style="-fx-border-color: Black;">
+         <children>
+            <Label layoutX="87.0" layoutY="-1.0" text="Training Controls">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Button layoutX="13.0" layoutY="185.0" mnemonicParsing="false" onAction="#startTrainingOnAction" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: Green;" text="Start" />
+            <Button layoutX="170.0" layoutY="235.0" mnemonicParsing="false" onAction="#stopTrainingOnAction" prefHeight="25.0" prefWidth="150.0" text="Stop training after this run">
+               <font>
+                  <Font size="11.0" />
+               </font></Button>
+            <Button layoutX="170.0" layoutY="185.0" mnemonicParsing="false" onAction="#stopNowTrainingOnAction" prefHeight="25.0" prefWidth="150.0" style="-fx-background-color: Red;" text="Stop Training now" />
+            <Button layoutX="170.0" layoutY="210.0" mnemonicParsing="false" onAction="#endRunOnAction" prefHeight="25.0" prefWidth="150.0" text="End this run and start next">
+               <font>
+                  <Font size="11.0" />
+               </font></Button>
+            <Label layoutX="15.0" layoutY="40.0" text="Number of elites" />
+            <TextField fx:id="numElitesTextField" layoutX="15.0" layoutY="55.0" prefWidth="150.0" promptText="10" text="10" />
+            <Label layoutX="170.0" layoutY="40.0" text="Size of generation" />
+            <TextField fx:id="sizeGenerationTextField" layoutX="170.0" layoutY="55.0" prefWidth="150.0" promptText="500" text="500" />
+            <Label layoutX="15.0" layoutY="80.0" text="Structure of NN" />
+            <TextField fx:id="structureTextField" layoutX="15.0" layoutY="95.0" prefWidth="150.0" text="4,4,4,2" />
+            <Label layoutX="170.0" layoutY="80.0" text="Number of runs" />
+            <TextField fx:id="numRunsTextField" layoutX="170.0" layoutY="95.0" prefWidth="150.0" promptText="100" text="10" />
+            <Label layoutX="15.0" layoutY="120.0" text="Strength of mutations" />
+            <Label layoutX="170.0" layoutY="120.0" text="Rate of mutation" />
+            <TextField fx:id="strengthMutationText" layoutX="15.0" layoutY="135.0" prefWidth="150.0" promptText="100" text="0.05" />
+            <TextField fx:id="rateMutationText" layoutX="170.0" layoutY="135.0" prefWidth="150.0" promptText="100" text="0.03" />
+            <AnchorPane layoutX="14.0" layoutY="214.0" prefHeight="41.0" prefWidth="152.0" style="-fx-border-color: Black;">
+               <children>
+                  <CheckBox fx:id="saveGenomsBox" layoutX="1.0" mnemonicParsing="false" onAction="#saveGenomsOnAction" text="Save genoms" />
+                  <TextField fx:id="elitesToBeSavedTextField" layoutX="1.0" layoutY="17.0" onAction="#elitesToBeSavedOnAction" prefWidth="150.0" promptText="Better than 0" />
+               </children>
+            </AnchorPane>
+         </children>
+      </AnchorPane>
+      <AnchorPane layoutX="400.0" layoutY="459.0" prefHeight="200.0" prefWidth="149.0">
+         <children>
+            <Label fx:id="scoreLabel" layoutX="86.0" layoutY="6.0" text="Score: NaN" />
+            <Label fx:id="birdsLabel" layoutX="88.0" layoutY="29.0" text="Birds: NaN" />
+         </children>
+      </AnchorPane>
+      <ListSelectionView fx:id="clientList" layoutY="557.0" />
+      <Button layoutY="502.0" mnemonicParsing="false" onAction="#StartLoadedGameOnAction" prefHeight="57.0" prefWidth="106.0" text="Start game with choosen clients" textOverrun="CLIP" wrapText="true" />
+      <Button layoutX="106.0" layoutY="518.0" mnemonicParsing="false" onAction="#refreshListOnAction" text="Refresh List" />
+      <AnchorPane layoutX="336.0" prefHeight="200.0" prefWidth="200.0">
+         <children>
+            <Label layoutX="37.0" layoutY="-1.0" text="Game settings">
+               <font>
+                  <Font size="20.0" />
+               </font>
+            </Label>
+            <Label layoutX="14.0" layoutY="40.0" text="Game resolution" />
+            <ComboBox fx:id="gameResolutionBox" layoutX="14.0" layoutY="55.0" onAction="#resolutionChanged" prefWidth="150.0" />
+            <Label layoutX="14.0" layoutY="80.0" text="Game speed" />
+            <ComboBox fx:id="gameSpeedBox" layoutX="14.0" layoutY="97.0" onAction="#gameSpeedChanged" prefWidth="150.0" />
+            <CheckBox fx:id="headlessCheck" layoutX="13.0" layoutY="132.0" mnemonicParsing="false" text="Headless" />
+         </children>
+      </AnchorPane>
+      <Label fx:id="pathLabel" layoutX="106.0" layoutY="543.0" prefHeight="17.0" prefWidth="247.0" text="PATH" />
+      <Button layoutX="192.0" layoutY="518.0" mnemonicParsing="false" onAction="#changeDirectoryOnAction" text="ChangeDirectory" />
+   </children>
+</AnchorPane>
