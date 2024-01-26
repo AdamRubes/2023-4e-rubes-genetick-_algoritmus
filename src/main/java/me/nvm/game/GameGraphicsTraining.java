@@ -6,7 +6,8 @@ import me.nvm.game.gameobjects.PipePair;
 
 import javax.swing.*;
 import java.awt.*;
-import java.util.HashMap;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Map;
 import java.util.Queue;
 
@@ -19,15 +20,39 @@ public class GameGraphicsTraining extends JFrame implements GraphicsInterface {
     int frameWidth;
     int  frameHeight;
 
+    JButton closeButton;
+
+    GameState gameState;
+
     public GameGraphicsTraining(GameBackendAI gameBackendAI, Resolution resolution){
         setWindow(resolution);
+
+        gameState = GameState.getInstance();
+
+        closeButton = new JButton("Stop game");
+        closeButton.setBounds(10, 10, 100, 30);
+
+
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gameState.setGameOver(true);
+            }
+        });
 
         this.gameBackendAI = gameBackendAI;
         birdMap = gameBackendAI.birdMap;
         pipePairs = gameBackendAI.pipePairs;
 
         makeShitCanvas = new RenderingPanel();
+
+
+        makeShitCanvas.setLayout(null);
+        makeShitCanvas.add(closeButton);
+
         add(makeShitCanvas);
+
+
     }
 
     @Override

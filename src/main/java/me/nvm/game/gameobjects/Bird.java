@@ -12,8 +12,9 @@ public class Bird extends GameObject{
     }
 
     public void update(){
+            velocity = velocity - (gameState.getGravity() * gameState.getDeltaTime() / 2);
             coordinateY = coordinateY + (velocity * gameState.getDeltaTime());
-            velocity = velocity - (gameState.getGravity() * gameState.getDeltaTime());
+            velocity = velocity - (gameState.getGravity() * gameState.getDeltaTime() / 2);
     }
 
 

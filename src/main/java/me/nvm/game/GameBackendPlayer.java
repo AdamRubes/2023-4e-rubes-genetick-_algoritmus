@@ -33,7 +33,7 @@ public class GameBackendPlayer extends GameBackendSuper{
     }
 
     @Override
-    protected void checkCollisions() {
+    protected void checkCollisions() {//Hráč může opustit obrazovku
         for (PipePair element : pipePairs) {
             if (Math.abs(bird.coordinateX - element.position) < birdRadius + pipeWidth / 2) {
                 int upperYBoundry = element.getUpperY();

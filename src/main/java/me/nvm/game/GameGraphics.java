@@ -7,25 +7,39 @@ import me.nvm.game.gameobjects.PipePair;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.util.Queue;
 
 public class GameGraphics extends JFrame implements GraphicsInterface {
     Bird bird;
     RenderingPanel makeShitCanvas;
     GameBackendPlayer gameBackend;
+
+    GameState gameState;
     Queue<PipePair> pipePairs;
     double scale;
     int frameWidth;
     int  frameHeight;
+    JButton closeButton;
 
     public GameGraphics(GameBackendPlayer gameBackend, Resolution resolution){
         setWindow(resolution);
+        gameState = GameState.getInstance();
+
+        closeButton = new JButton("Stop game");
+        closeButton.setBounds(10, 10, 100, 30);
+
+
+
 
         this.gameBackend = gameBackend;
         bird = gameBackend.bird;
         pipePairs = gameBackend.pipePairs;
 
         makeShitCanvas = new RenderingPanel();
+
+        makeShitCanvas.setLayout(null);
+        makeShitCanvas.add(closeButton);
 
         add(makeShitCanvas);
         setupKeyBindings();
@@ -73,6 +87,14 @@ public class GameGraphics extends JFrame implements GraphicsInterface {
             @Override
             public void actionPerformed(ActionEvent e) {
                 gameBackend.userJumped = true;
+            }
+        });
+
+
+        closeButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                gameState.setGameOver(true);
             }
         });
     }
