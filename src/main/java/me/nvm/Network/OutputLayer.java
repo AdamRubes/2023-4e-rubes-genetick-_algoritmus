@@ -13,6 +13,7 @@ public class OutputLayer implements Layer {
         outputValues = new double[size];
     }
 
+    @Override
     public void setNeurons(Neuron[] neurons) {
         this.neurons = neurons;
     }

@@ -10,7 +10,7 @@ public class Client implements Comparable<Client> {
 
     private GeneticInfo geneticInfo;
 
-    private Network network;
+    public Network network;
 
     
 

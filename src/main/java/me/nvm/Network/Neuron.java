@@ -1,6 +1,7 @@
 package me.nvm.Network;
 
 public class Neuron {
+    ActivationFunction activationFunction;
     public int numOfConn;
     public double[] inputWeights;
     public double bias;
@@ -11,6 +12,7 @@ public class Neuron {
         this.bias = bias;
         this.value = 0;
         this.numOfConn = inputWeights.length;
+        this.activationFunction = new ReLu();
     }
     public void compute(double[] inputValues) {
         double sum = 0;
@@ -18,11 +20,19 @@ public class Neuron {
         for (int i = 0; i < inputValues.length; i++){
             sum += inputValues[i] * inputWeights[i];
         }
-        value = SigmoidFun.compute(sum);
+        value = activationFunction.compute(sum);
     }
 
     public double getValue(){
         return value;
+    }
+
+    public double getBias(){
+        return bias;
+    }
+
+    public double[] getInputWeights() {
+        return inputWeights;
     }
 
     @Override

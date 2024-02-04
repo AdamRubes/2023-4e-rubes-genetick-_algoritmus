@@ -1,6 +1,8 @@
 package me.nvm.game;
 
 import me.nvm.MainApp.Resolution;
+import me.nvm.Network.Network;
+import me.nvm.Network.NetworkVisualiser;
 import me.nvm.game.gameobjects.Bird;
 import me.nvm.game.gameobjects.PipePair;
 
@@ -8,8 +10,8 @@ import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Map;
-import java.util.Queue;
+import java.util.*;
+import java.util.List;
 
 public class GameGraphicsTraining extends JFrame implements GraphicsInterface {
     Map<Integer, Bird> birdMap;
@@ -19,10 +21,10 @@ public class GameGraphicsTraining extends JFrame implements GraphicsInterface {
     double scale;
     int frameWidth;
     int  frameHeight;
-
     JButton closeButton;
-
     GameState gameState;
+
+    List<NetworkVisualiser> networkVisualisers = new ArrayList<>();
 
     public GameGraphicsTraining(GameBackendAI gameBackendAI, Resolution resolution){
         setWindow(resolution);
@@ -50,9 +52,20 @@ public class GameGraphicsTraining extends JFrame implements GraphicsInterface {
         makeShitCanvas.setLayout(null);
         makeShitCanvas.add(closeButton);
 
+//        System.out.println("AHOJ");
+//        System.out.println(networkVisualisers);
+//        for (NetworkVisualiser visualiser : networkVisualisers) {
+//            System.out.println(visualiser.calculateWidth()+  " + " +visualiser.calculateHeight() );
+//
+//        }
+
+
         add(makeShitCanvas);
+    }
 
-
+    public void registerVisualiser(NetworkVisualiser visualiser){
+        visualiser.setBounds(10, 15, visualiser.calculateWidth(), visualiser.calculateHeight());
+        makeShitCanvas.add(visualiser);
     }
 
     @Override
@@ -89,8 +102,6 @@ public class GameGraphicsTraining extends JFrame implements GraphicsInterface {
     }
 
 
-
-
     private class RenderingPanel extends JPanel {
         int birdWidth = 50;
         int birdHeight = 50;
@@ -109,10 +120,17 @@ public class GameGraphicsTraining extends JFrame implements GraphicsInterface {
                     g.fillRect((int) ((bird.coordinateX - (birdWidth / 2)) * scale), (int) ((bird.coordinateY - (birdHeight / 2)) * scale), (int) (birdWidth * scale), (int) (birdHeight * scale));
 
                     g.setColor(Color.BLUE);
-                    int circleRadius = 25; // Adjust the radius as needed
+                    int circleRadius = 25;
                     g.fillOval((int) ((bird.coordinateX - circleRadius) * scale), (int) ((bird.coordinateY - (birdHeight / 2)) * scale), (int) ((circleRadius * 2) * scale), (int) ((circleRadius * 2) * scale));
+
+                    g.setColor(Color.BLACK);
+                    String keyText = String.valueOf(birdEntry.getKey());
+                    int textX = (int) ((bird.coordinateX - (birdWidth / 2)) * scale) + 5;
+                    int textY = (int) ((bird.coordinateY - (birdHeight / 2)) * scale) + 15;
+                    g.drawString(keyText, textX, textY);
                 }
             }
+
             synchronized (pipePairs) {
                 g.setColor(Color.GREEN);
                 for (PipePair element : pipePairs) {

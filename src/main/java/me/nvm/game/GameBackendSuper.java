@@ -90,7 +90,7 @@ public abstract class GameBackendSuper extends Thread{
             frames++;
             //System.out.println(frames);
             if (now - lastFPSTime >= 1000000000) { // One second has passed
-                System.out.println("FPS: " + frames);
+                //System.out.println("FPS: " + frames);
                 frames = 0;
                 lastFPSTime = now;
             }

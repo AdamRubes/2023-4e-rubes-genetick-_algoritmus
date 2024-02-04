@@ -43,6 +43,7 @@ public class HiddenLayer implements Layer {
         this.neurons = neurons;
     }
 
+    @Override
     public Neuron[] getNeurons() {
         return neurons;
     }

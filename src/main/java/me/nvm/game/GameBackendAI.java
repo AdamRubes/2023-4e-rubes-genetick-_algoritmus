@@ -43,11 +43,16 @@ public class GameBackendAI extends GameBackendSuper {
                 }
             }
         }
+//        System.out.println("%%%%%%%%%%%");
+//        System.out.println(birdMap.get(1).coordinateX);
+//        System.out.println(pipePairLinkedList.get(indexOfNextPipe));
+//        System.out.println(deltaX);
+
         if(Math.abs(lengthToNextPipe - deltaX) > gameState.getSizeOfGaps() * 0.75){
             gameState.incrementScore();
             System.out.println("SCORE: " + gameState.getScore());
         }
-        lengthToNextPipe = deltaX;
+        lengthToNextPipe = deltaX + pipeWidth; // do konce trubky
 
         for (Map.Entry<Integer, Bird> birdEntry : birdMap.entrySet()) {
             clientMap.get(birdEntry.getKey()).fitnessScore = Math.abs(gameState.getLenght());
@@ -120,8 +125,9 @@ public class GameBackendAI extends GameBackendSuper {
                 inputArr[3] = fourthParam;
 
                 double[] output = client.compute(inputArr);
+                //System.out.println(client.id + "{output1: " +output[1] + " output2: " +output[1] + "}");
 
-                if (output[0] > output[1]) birdMap.get(clientEntry.getKey()).jump();
+                if (output[0] > output[1] && Math.abs(output[0] - output[1]) > 0.6) birdMap.get(clientEntry.getKey()).jump();
             }
         }
     }

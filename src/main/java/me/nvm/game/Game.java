@@ -2,6 +2,7 @@ package me.nvm.game;
 
 import me.nvm.GNN.Client;
 import me.nvm.MainApp.Resolution;
+import me.nvm.Network.NetworkVisualiser;
 
 import java.util.HashMap;
 
@@ -36,7 +37,11 @@ public class Game {
         restartReworked();
         mainBackend = new GameBackendAI(clientHashMap);
         changeSpeedOfGame(speedMultiplier);
-        mainGraphics = new GameGraphicsTraining((GameBackendAI) mainBackend, resolution);
+        GameGraphicsTraining gameGraphicsTraining = new GameGraphicsTraining((GameBackendAI) mainBackend, resolution);
+        gameGraphicsTraining.registerVisualiser(new NetworkVisualiser(clientHashMap.get(1).network));
+
+
+        mainGraphics = gameGraphicsTraining;
         mainBackend.linkToGraphics(mainGraphics);
 
         mainBackend.start();

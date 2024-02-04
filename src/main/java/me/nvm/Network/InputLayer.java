@@ -3,8 +3,7 @@ package me.nvm.Network;
 /*
 Class representing the first (input) layer of the neural network.
 The purpose of this layer is just to pass input values to the first hidden layer.
-In this implementation you have to first set input values and then the compute function
-will start a recursive computing in the next and next.. layer.
+
  */
 
 public class InputLayer implements Layer {
@@ -14,6 +13,8 @@ public class InputLayer implements Layer {
 
     public double[] values;
 
+    Neuron[] lobotomizedNeurons;
+
     public InputLayer(int size) {
         this.size = size;
         this.values = new double[size];
@@ -21,6 +22,9 @@ public class InputLayer implements Layer {
 
     public void setValues(double[] values){
         this.values = values;
+        for (int i = 0; i < lobotomizedNeurons.length; i++){
+            lobotomizedNeurons[i].value = values[i];
+        }
     }
 
     @Override
@@ -30,7 +34,7 @@ public class InputLayer implements Layer {
 
     /*
     No computations are being made here.
-    Just calls compute method for the first hidden layer.
+
      */
     @Override
     public void compute() {
@@ -48,8 +52,13 @@ public class InputLayer implements Layer {
     }
 
     @Override
+    public void setNeurons(Neuron[] neurons) {
+        this.lobotomizedNeurons = neurons;
+    }
+
+    @Override
     public Neuron[] getNeurons() {
-        return null;
+        return lobotomizedNeurons;
     }
 
     @Override

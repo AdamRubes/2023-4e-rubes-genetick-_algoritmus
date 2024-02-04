@@ -6,5 +6,7 @@ public interface Layer {
     public void linkLayer(Layer prevLayer, Layer nextLayer);
     public double[] getOutput();
 
+    public void setNeurons(Neuron[] neurons);
+
     public Neuron[] getNeurons();
 }

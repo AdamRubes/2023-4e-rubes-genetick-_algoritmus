@@ -1,8 +1,8 @@
 package me.nvm.Network;
 
-public class SigmoidFun {
-
-public static double compute(double value){
+public class SigmoidFun implements ActivationFunction{
+@Override
+public double compute(double value){
     return 1 / (1 + Math.exp(-value));
 }
 }

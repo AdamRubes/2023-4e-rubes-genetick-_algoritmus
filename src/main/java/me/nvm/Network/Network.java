@@ -7,7 +7,7 @@ import static me.nvm.MainApp.AuxilaryTools.getRandomDouble;
 import static me.nvm.MainApp.AuxilaryTools.randomize1DArray;
 
 
-public class Network {
+public class Network implements VisualisableFullyConnectedNetwork{
     public   Layer[] layers;
     public  int numOfLayers;
     public  int[] layerSizes;
@@ -72,7 +72,13 @@ public class Network {
     Initiates neurons for all hidden layers and for output layer.
     */
     private void initNeurons(){
-        //Hidden layers ->
+        Neuron[] inputNeurons = new Neuron[inputSize];
+
+        Arrays.setAll(inputNeurons, i -> new Neuron(0, new double[layerSizes[1]]));
+
+        layers[0].setNeurons(inputNeurons);
+
+        //Hidden + output layers ->
         for (int layer = 1; layer < layerSizes.length; layer++){
             int sizeOfLayer = layerSizes[layer];
             int sizeOfPrevLayer = layerSizes[layer - 1];
@@ -87,8 +93,7 @@ public class Network {
                 neurons[neuron] = new Neuron(bias,inputWeights);
             }
             //TODO think if possible to replace it with interfacemethod
-            if(layers[layer] instanceof HiddenLayer) ((HiddenLayer)layers[layer]).setNeurons(neurons);
-            else if(layers[layer] instanceof OutputLayer)((OutputLayer)layers[layer]).setNeurons(neurons);
+           layers[layer].setNeurons(neurons);
         }
     }
 
@@ -117,7 +122,33 @@ public class Network {
         return numOfLayers;
     }
 
+    @Override
     public int[] getLayerSizes() {
         return layerSizes;
+    }
+
+    @Override
+    public double[][] getOutputWeights(int layer) {
+        return Arrays.stream(layers[layer].getNeurons())
+                .map(Neuron::getInputWeights)
+                .toArray(double[][]::new);
+    }
+
+    @Override
+    public double[] getBiases(int layer) {
+
+        return Arrays.stream(layers[layer].getNeurons())
+                .findFirst()
+                .map(neuron -> Arrays.stream(layers[layer].getNeurons())
+                        .mapToDouble(Neuron::getBias)
+                        .toArray())
+                .orElseGet(() -> new double[layerSizes[0]]);
+    }
+
+    @Override
+    public double[] getValues(int layer) {
+        return Arrays.stream(layers[layer].getNeurons())
+                .mapToDouble(Neuron::getValue)
+                .toArray();
     }
 }
