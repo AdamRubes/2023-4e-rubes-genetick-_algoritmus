@@ -5,6 +5,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.Style;
 
 import java.io.IOException;
 
@@ -15,6 +17,9 @@ public class MainApp extends Application {
 
         Parent root = fxmlLoader.load();
         Scene scene = new Scene(root);
+
+
+
         stage.setTitle("Hello!");
         stage.setScene(scene);
         stage.show();

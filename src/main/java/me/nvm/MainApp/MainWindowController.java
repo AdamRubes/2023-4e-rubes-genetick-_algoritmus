@@ -9,6 +9,8 @@ import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
 import javafx.stage.Stage;
 import javafx.stage.Window;
+import jfxtras.styles.jmetro.JMetro;
+import jfxtras.styles.jmetro.Style;
 import me.nvm.GNN.Client;
 import me.nvm.GNN.GeneticInfo;
 import me.nvm.game.Game;
@@ -29,6 +31,9 @@ public class MainWindowController {
     Training training;
 
     File folderWithGenomes;
+
+    @FXML
+    private AnchorPane toBeStyled;
 
     @FXML
     private AnchorPane GameControlsPane;
@@ -260,6 +265,9 @@ public class MainWindowController {
     }
 
     public void initialize() {
+        JMetro jMetro = new JMetro(Style.DARK);
+        jMetro.setParent(toBeStyled);
+
         FolderHolder.autoInitFile();
 
         pathLabel.setText(FolderHolder.customFolder.getPath());
