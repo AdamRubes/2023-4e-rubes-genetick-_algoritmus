@@ -36,16 +36,12 @@ public class Game {
 
     public void startTrainingGame(HashMap<Integer, Client> clientHashMap) {
         restartReworked();
+        System.out.println(speedMultiplier);
         mainBackend = new GameBackendAI(clientHashMap);
+
         changeSpeedOfGame(speedMultiplier);
+        System.out.println(mainBackend.getSpeedMultiplier());
         GameGraphicsTraining gameGraphicsTraining = new GameGraphicsTraining((GameBackendAI) mainBackend, resolution);
-
-        Integer[] setKlicu = clientHashMap.keySet().toArray(new Integer[0]);
-
-
-
-        gameGraphicsTraining.registerVisualiser(new NetworkVisualiser(clientHashMap.get(setKlicu[0]).network));
-
 
         mainGraphics = gameGraphicsTraining;
         mainBackend.linkToGraphics(mainGraphics);
@@ -76,7 +72,8 @@ public class Game {
     }
 
     public void changeSpeedOfGame(double speedMultiplier){
-        mainBackend.setSpeedMultiplier(speedMultiplier);
+        this.speedMultiplier = speedMultiplier;
+        mainBackend.setSpeedMultiplier(this.speedMultiplier);
     }
 
 

@@ -50,7 +50,7 @@ public class GameBackendAI extends GameBackendSuper {
 
         if(Math.abs(lengthToNextPipe - deltaX) > gameState.getSizeOfGaps() * 0.75){
             gameState.incrementScore();
-            System.out.println("SCORE: " + gameState.getScore());
+            //System.out.println("SCORE: " + gameState.getScore());
         }
         lengthToNextPipe = deltaX + pipeWidth; // do konce trubky
 
@@ -87,6 +87,7 @@ public class GameBackendAI extends GameBackendSuper {
                 }
             }
         }
+
 
         gameState.setNumOfLivingBirds(birdMap.size());
         if(gameState.getNumOfLivingBirds() <= 0) gameState.setGameOver(true);
@@ -133,7 +134,8 @@ public class GameBackendAI extends GameBackendSuper {
                 double[] output = client.compute(inputArr);
                 //System.out.println(client.id + "{output1: " +output[1] + " output2: " +output[1] + "}");
 
-                if (output[0] > output[1] && Math.abs(output[0] - output[1]) > 0.6) birdMap.get(clientEntry.getKey()).jump();
+               if (output[0] > output[1] && Math.abs(output[0] - output[1]) > 0.6) birdMap.get(clientEntry.getKey()).jump();
+
             }
         }
     }

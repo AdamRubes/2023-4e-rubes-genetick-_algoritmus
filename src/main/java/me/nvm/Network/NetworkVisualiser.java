@@ -1,6 +1,8 @@
 package me.nvm.Network;
 
 import javax.swing.*;
+import javax.swing.border.Border;
+import javax.swing.border.LineBorder;
 import java.awt.*;
 import java.util.Arrays;
 
@@ -25,10 +27,12 @@ public class NetworkVisualiser extends JPanel {
         this.network = network;
         this.structure = network.getLayerSizes();
         setOpaque(false);
+        Border border = new LineBorder(Color.RED, 2);
+        //setBorder(border);
     }
 
     public int calculateWidth(){
-        return 10 + structure.length * neuronDiameter + (structure.length-1) * gapBetweenLayers;
+        return neuronDiameter + (structure.length-1) * gapBetweenLayers;
     }
 
     public int calculateHeight(){
@@ -36,7 +40,11 @@ public class NetworkVisualiser extends JPanel {
                 .max()
                 .orElseThrow();
 
-        return  10 + sizeOfThickestLayer * neuronDiameter + (sizeOfThickestLayer - 1) * gapBetweenNeurons;
+        if ((sizeOfThickestLayer % 2) == 0){
+            return (int) (neuronDiameter * 1.5 + (sizeOfThickestLayer - 1) * gapBetweenNeurons);
+        }else {
+            return (int) ( neuronDiameter  + (sizeOfThickestLayer - 1) * gapBetweenNeurons);
+        }
     }
 
 
@@ -88,7 +96,7 @@ public class NetworkVisualiser extends JPanel {
         double normalizedValue = Math.min(1.0, value);
         normalizedValue = Math.max(0.0, normalizedValue);
 
-        if (value != normalizedValue) System.out.println("Value: " + value + " | Normalizováno" + normalizedValue);
+        //if (value != normalizedValue) System.out.println("Value: " + value + " | Normalizováno" + normalizedValue);
 
         int alpha = (int) (255 * normalizedValue);
         int intensity = (int) (255 * normalizedValue);

@@ -18,7 +18,8 @@ public abstract class GameBackendSuper extends Thread{
     protected final Resolution mainBackendResolution = Resolution.SD;
 
     private long lastTime; // Time in nanos of last rendered frame.
-    private final double TARGET_FPS = 60; // How many times should the game "refresh" or "check" conditions per second
+    private final double TARGET_FPS = 130; // How many times should the game "refresh" or "check" conditions per second
+    long graphicalFPS = 30;
     private final double OPTIMAL_TIME = 1e9 / TARGET_FPS; // How much nanos for each game loop to sustain target FPS
     private int frames = 0; // How many gameloops/frames has been
     private long lastFPSTime; // Time in nanos of last rendered frame. Used in computations for FPS measuring.
@@ -33,8 +34,14 @@ public abstract class GameBackendSuper extends Thread{
 
     private double speedMultiplier = 1;
 
+    long lastRefreshTime = System.nanoTime();
+
+    long refreshInterval = (long) (1e9 / graphicalFPS);
+
     public GameBackendSuper() {
         this.gameState = GameState.getInstance();
+        System.out.println(getPriority());
+        setPriority(7);
     }
 
     public void linkToGraphics(GraphicsInterface gameGraphics){
@@ -64,18 +71,24 @@ public abstract class GameBackendSuper extends Thread{
             double delta = updateTime / 1e9;
             gameState.setDeltaTime(delta * speedMultiplier);
 
-            handleInput();
 
-            update();
-            pipeLifecycle();
+                handleInput();
 
-            checkCollisions();
+                update();
+                pipeLifecycle();
 
-            if(gameState.isGameOver()) break;
+                checkCollisions();
 
-            pointCounter();
+                if(gameState.isGameOver()) break;
 
-            gameGraphics.refresh();
+                pointCounter();
+            if(graphicalFPS == TARGET_FPS) gameGraphics.refresh();
+            else if (now - lastRefreshTime >= refreshInterval) {
+                    gameGraphics.refresh();
+                    lastRefreshTime = now;
+                }
+
+
 
             long loopTime = System.nanoTime() - now; // How much time did the game-loop take
             long sleepTime = (long) (OPTIMAL_TIME - loopTime); // How long should the program wait to get close to OPTIMAL_TIME
@@ -88,9 +101,9 @@ public abstract class GameBackendSuper extends Thread{
             }
 
             frames++;
-            //System.out.println(frames);
+
             if (now - lastFPSTime >= 1000000000) { // One second has passed
-                //System.out.println("FPS: " + frames);
+                System.out.println("FPS: " + frames);
                 frames = 0;
                 lastFPSTime = now;
             }
@@ -131,8 +144,11 @@ public abstract class GameBackendSuper extends Thread{
     };
 
     public void setSpeedMultiplier(double speedMultiplier){
-        if (!this.isAlive()) this.speedMultiplier = speedMultiplier;
-        else System.out.println("Cant change speed during game");
+        this.speedMultiplier = speedMultiplier;
+    }
+
+    public double getSpeedMultiplier(){
+        return speedMultiplier;
     }
 
     public int getWidth(){

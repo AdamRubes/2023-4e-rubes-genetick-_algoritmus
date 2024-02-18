@@ -12,7 +12,6 @@ public class Client implements Comparable<Client> {
 
     public Network network;
 
-    
 
     public double[] compute(double[] input){
         network.setInput(input);
@@ -59,4 +58,7 @@ public class Client implements Comparable<Client> {
                 '}';
     }
 
+    public int getId() {
+        return id;
+    }
 }

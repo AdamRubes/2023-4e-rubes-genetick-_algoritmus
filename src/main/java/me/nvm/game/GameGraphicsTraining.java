@@ -1,12 +1,16 @@
 package me.nvm.game;
 
+import me.nvm.GNN.Client;
 import me.nvm.MainApp.Resolution;
 import me.nvm.Network.Network;
 import me.nvm.Network.NetworkVisualiser;
+import me.nvm.Network.VisualizableFullyConnectedNetwork;
 import me.nvm.game.gameobjects.Bird;
 import me.nvm.game.gameobjects.PipePair;
 
 import javax.swing.*;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -32,7 +36,7 @@ public class GameGraphicsTraining extends JFrame implements GraphicsInterface {
         gameState = GameState.getInstance();
 
         closeButton = new JButton("Stop game");
-        closeButton.setBounds(10, 10, 100, 30);
+        closeButton.setBounds(0, 0, 100, 30);
 
 
         closeButton.addActionListener(new ActionListener() {
@@ -48,24 +52,31 @@ public class GameGraphicsTraining extends JFrame implements GraphicsInterface {
 
         makeShitCanvas = new RenderingPanel();
 
-
         makeShitCanvas.setLayout(null);
         makeShitCanvas.add(closeButton);
 
-//        System.out.println("AHOJ");
-//        System.out.println(networkVisualisers);
-//        for (NetworkVisualiser visualiser : networkVisualisers) {
-//            System.out.println(visualiser.calculateWidth()+  " + " +visualiser.calculateHeight() );
-//
-//        }
+        NetworkVisualiserContainer networkVisualiserContainer = new NetworkVisualiserContainer(0,30,1);
+        NetworkVisualiserContainer networkVisualiserContainer2 = new NetworkVisualiserContainer(0,30,2);
+        NetworkVisualiserContainer networkVisualiserContainer3 = new NetworkVisualiserContainer(0,30,3);
+
+        JPanel visualiserBox = new JPanel();
+        visualiserBox.setOpaque(false);
+        visualiserBox.setBounds(0,40, networkVisualiserContainer.getWidth(), getHeight() - 40);
+        visualiserBox.setLayout(new BoxLayout(visualiserBox, BoxLayout.Y_AXIS));
+
+        visualiserBox.add(networkVisualiserContainer);
+        visualiserBox.add(networkVisualiserContainer2);
+        visualiserBox.add(networkVisualiserContainer3);
+        makeShitCanvas.add(visualiserBox);
 
 
         add(makeShitCanvas);
     }
 
     public void registerVisualiser(NetworkVisualiser visualiser){
-        visualiser.setBounds(10, 15, visualiser.calculateWidth(), visualiser.calculateHeight());
-        makeShitCanvas.add(visualiser);
+
+        //visualiser.setBounds(10, 15, visualiser.calculateWidth(), visualiser.calculateHeight());
+        //makeShitCanvas.add(visualiser);
     }
 
     @Override
@@ -140,6 +151,99 @@ public class GameGraphicsTraining extends JFrame implements GraphicsInterface {
                     g.fillRect((int) ((element.position - pipeWidth / 2) * scale), frameHeight - lowerPipeHeight, (int) (pipeWidth * scale), lowerPipeHeight);
                 }
             }
+        }
+    }
+
+    private class NetworkVisualiserContainer extends JPanel{
+        JComboBox<String> comboBox = new JComboBox<>();
+        NetworkVisualiser networkVisualiser;
+        public NetworkVisualiserContainer(int x, int y, int defaultItem) {
+
+            refreshClients();
+            addListeners();
+
+            setLayout(null);
+            setOpaque(false);
+
+            networkVisualiser = prepVisualiser(gameBackendAI.clientMap.get(getKeyAtPosition(defaultItem)).network);
+
+            comboBox.setBounds(0,0,200,30);
+            setBounds(x, y, networkVisualiser.getWidth(),networkVisualiser.getHeight()+40);
+
+            add(comboBox);
+            add(networkVisualiser);
+        }
+
+        public void refreshClients(){
+            ActionListener[] listeners = comboBox.getActionListeners();
+            for (ActionListener listener : listeners) {
+                comboBox.removeActionListener(listener);
+            }
+
+
+            comboBox.removeAllItems();
+
+
+            birdMap.keySet()
+                    .stream()
+                    .map(integer -> String.valueOf(integer))
+                    .forEach(comboBox::addItem);
+
+
+
+            for (ActionListener listener : listeners) {
+                comboBox.addActionListener(listener);
+            }
+        }
+
+        public static void printComboBoxItems(JComboBox<?> comboBox) {
+            ComboBoxModel<?> model = comboBox.getModel();
+            int size = model.getSize();
+            for (int i = 0; i < size; i++) {
+                Object item = model.getElementAt(i);
+                System.out.println(item);
+            }
+        }
+
+        private void addListeners(){
+
+            comboBox.addActionListener(new ActionListener() {
+                public void actionPerformed(ActionEvent e) {
+
+                    int selectedItem = Integer.parseInt((String) comboBox.getSelectedItem());
+
+                    System.out.println("In action listener" + selectedItem);
+                    remove(networkVisualiser);
+                    networkVisualiser = prepVisualiser(gameBackendAI.clientMap.get(selectedItem).network);
+                    add(networkVisualiser);
+                }
+            });
+            comboBox.addPopupMenuListener(new PopupMenuListener() {
+                @Override
+                public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
+                    refreshClients();
+                }
+
+                @Override
+                public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {}
+                @Override
+                public void popupMenuCanceled(PopupMenuEvent e) {}
+
+            });
+        }
+
+        private NetworkVisualiser prepVisualiser(VisualizableFullyConnectedNetwork network){
+            NetworkVisualiser nv = new NetworkVisualiser(network);
+            nv.setBounds(0,30,nv.calculateWidth(),nv.calculateHeight());
+            return nv;
+        }
+
+
+        public int getKeyAtPosition(int position) {
+            Set<Integer> keySet = gameBackendAI.clientMap.keySet();
+                Integer[] keysArray = keySet.toArray(new Integer[]{});
+                return keysArray[position];
+
         }
     }
 }
