@@ -102,6 +102,8 @@ public class GameBackendAI extends GameBackendSuper {
 
     @Override
     protected void handleInput() {
+        //FIXME Zajistit pouze kladné vstpuny do NN
+        // pak fixnout normalizaci ve vizualizeru
         for (Map.Entry<Integer, Client> clientEntry : clientMap.entrySet()) {
             if(birdMap.containsKey(clientEntry.getKey())){
                 Client client = clientEntry.getValue();
@@ -123,6 +125,10 @@ public class GameBackendAI extends GameBackendSuper {
                 inputArr[1] = secondParam;
                 inputArr[2] = thirdParam;
                 inputArr[3] = fourthParam;
+
+//                for (double param: inputArr){
+//                    if (param < 0) System.out.println("Zaporny" + param);
+//                }
 
                 double[] output = client.compute(inputArr);
                 //System.out.println(client.id + "{output1: " +output[1] + " output2: " +output[1] + "}");

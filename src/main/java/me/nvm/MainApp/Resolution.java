@@ -13,7 +13,6 @@ public enum Resolution {
         this.scaleFromSD = scaleFromSD;
     }
 
-
     @Override
     public String toString() {
         return getWidth() + "/" + getHeight();

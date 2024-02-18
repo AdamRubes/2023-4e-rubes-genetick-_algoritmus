@@ -5,6 +5,7 @@ import me.nvm.MainApp.Resolution;
 import me.nvm.Network.NetworkVisualiser;
 
 import java.util.HashMap;
+import java.util.Set;
 
 public class Game {
     GameState gameState;
@@ -38,7 +39,12 @@ public class Game {
         mainBackend = new GameBackendAI(clientHashMap);
         changeSpeedOfGame(speedMultiplier);
         GameGraphicsTraining gameGraphicsTraining = new GameGraphicsTraining((GameBackendAI) mainBackend, resolution);
-        gameGraphicsTraining.registerVisualiser(new NetworkVisualiser(clientHashMap.get(1).network));
+
+        Integer[] setKlicu = clientHashMap.keySet().toArray(new Integer[0]);
+
+
+
+        gameGraphicsTraining.registerVisualiser(new NetworkVisualiser(clientHashMap.get(setKlicu[0]).network));
 
 
         mainGraphics = gameGraphicsTraining;

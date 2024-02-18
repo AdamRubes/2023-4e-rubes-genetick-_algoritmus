@@ -1,6 +1,6 @@
 package me.nvm.Network;
 
-public interface VisualisableFullyConnectedNetwork  {
+public interface VisualizableFullyConnectedNetwork {
 
     public int[] getLayerSizes();
 
@@ -9,4 +9,5 @@ public interface VisualisableFullyConnectedNetwork  {
     public double[] getBiases(int layer);
 
     public double[] getValues(int layer);
+
 }

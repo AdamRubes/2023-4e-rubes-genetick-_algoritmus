@@ -1,7 +1,5 @@
 package me.nvm.Network;
 
-import me.nvm.MainApp.AuxilaryTools;
-
 import javax.swing.*;
 import java.awt.*;
 import java.util.Arrays;
@@ -14,7 +12,7 @@ import java.util.Arrays;
     PS: Chce se mi brečet když píšu tento komentář.
 */
 public class NetworkVisualiser extends JPanel {
-    VisualisableFullyConnectedNetwork network;
+    VisualizableFullyConnectedNetwork network;
 
     int neuronDiameter = 40;
     int gapBetweenNeurons = 50; //Between centres of neurons ;P
@@ -23,7 +21,7 @@ public class NetworkVisualiser extends JPanel {
     int[] structure;
 
 
-    public NetworkVisualiser(VisualisableFullyConnectedNetwork network) {
+    public NetworkVisualiser(VisualizableFullyConnectedNetwork network) {
         this.network = network;
         this.structure = network.getLayerSizes();
         setOpaque(false);
@@ -86,10 +84,14 @@ public class NetworkVisualiser extends JPanel {
     }
 
     private Color getColorForValue(double value) {
+        //FIXME něco udělat s normalizací, smazat maximum až se fixne backend
         double normalizedValue = Math.min(1.0, value);
+        normalizedValue = Math.max(0.0, normalizedValue);
+
+        if (value != normalizedValue) System.out.println("Value: " + value + " | Normalizováno" + normalizedValue);
+
         int alpha = (int) (255 * normalizedValue);
         int intensity = (int) (255 * normalizedValue);
-
         return new Color(intensity, intensity, intensity, alpha);
     }
 

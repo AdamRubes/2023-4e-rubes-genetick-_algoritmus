@@ -7,7 +7,7 @@ import static me.nvm.MainApp.AuxilaryTools.getRandomDouble;
 import static me.nvm.MainApp.AuxilaryTools.randomize1DArray;
 
 
-public class Network implements VisualisableFullyConnectedNetwork{
+public class Network implements VisualizableFullyConnectedNetwork {
     public   Layer[] layers;
     public  int numOfLayers;
     public  int[] layerSizes;
@@ -136,13 +136,10 @@ public class Network implements VisualisableFullyConnectedNetwork{
 
     @Override
     public double[] getBiases(int layer) {
-
         return Arrays.stream(layers[layer].getNeurons())
-                .findFirst()
-                .map(neuron -> Arrays.stream(layers[layer].getNeurons())
                         .mapToDouble(Neuron::getBias)
-                        .toArray())
-                .orElseGet(() -> new double[layerSizes[0]]);
+                        .toArray();
+
     }
 
     @Override
