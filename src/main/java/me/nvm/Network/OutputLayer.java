@@ -3,14 +3,16 @@ package me.nvm.Network;
 import java.util.Arrays;
 
 public class OutputLayer implements Layer {
+    ActivationFunction activationFunction;
     public int size;
     public Neuron[] neurons;
     public double[] outputValues;
     Layer prevLayer;
 
-    public OutputLayer(int size) {
+    public OutputLayer(int size, ActivationFunction activationFunction) {
         this.size = size;
         outputValues = new double[size];
+        this.activationFunction = activationFunction;
     }
 
     @Override
@@ -51,6 +53,7 @@ public class OutputLayer implements Layer {
     public String toString() {
         return "\r\n" + "OutputLayer{" +
                 "size=" + size +
+                ", AF=" + activationFunction.toString() +
                 ", isLinked= " + (prevLayer!= null) +
                 ", neurons=" + Arrays.toString(neurons) +
                 '}';

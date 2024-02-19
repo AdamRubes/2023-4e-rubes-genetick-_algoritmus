@@ -34,10 +34,10 @@ public class Game {
         mainBackend.start();
     }
 
-    public void startTrainingGame(HashMap<Integer, Client> clientHashMap) {
+    public void startTrainingGame(HashMap<Integer, Client> clientHashMap, int numOfElites) {
         restartReworked();
         System.out.println(speedMultiplier);
-        mainBackend = new GameBackendAI(clientHashMap);
+        mainBackend = new GameBackendAI(clientHashMap,numOfElites);
 
         changeSpeedOfGame(speedMultiplier);
         System.out.println(mainBackend.getSpeedMultiplier());

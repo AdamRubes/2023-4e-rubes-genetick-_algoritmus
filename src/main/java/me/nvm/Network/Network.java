@@ -1,6 +1,7 @@
 package me.nvm.Network;
 
 
+import java.util.ArrayList;
 import java.util.Arrays;
 
 import static me.nvm.MainApp.AuxilaryTools.getRandomDouble;
@@ -22,6 +23,9 @@ public class Network implements VisualizableFullyConnectedNetwork {
     public double weightLowerBound = -2;
     public double weightUpperBound = +2;
 
+    public ArrayList<LayerBluePrint> layerBluePrints;
+
+    @Deprecated
     public Network(int... layerSizes) {
         this.layerSizes = layerSizes;
         this.numOfLayers = layerSizes.length;
@@ -39,6 +43,31 @@ public class Network implements VisualizableFullyConnectedNetwork {
         linkLayers();
     }
 
+    public Network(ArrayList<LayerBluePrint> bluePrints) {
+        this.layerBluePrints = bluePrints;
+        this.layerSizes = bluePrints.stream()
+                .mapToInt(LayerBluePrint::getLayerSize)
+                .toArray();
+
+        this.numOfLayers = this.layerSizes.length;
+        this.lastLayer = this.layerSizes.length - 1;
+
+        this.inputSize = layerSizes[0];
+        this.outputSize = layerSizes[lastLayer];
+        this.layers = new Layer[numOfLayers];
+
+        this.input = new double[inputSize];
+        this.output = new double[outputSize];
+
+        initLayers();
+        initNeurons();
+        linkLayers();
+
+
+
+
+    }
+
     public void setInput(double[] input){
         this.input = input;
     }
@@ -54,16 +83,19 @@ public class Network implements VisualizableFullyConnectedNetwork {
         return output;
     }
 
-    /*
+        /*
             Fills the layers array with HiddenLayers. Except for the first and last layer.
             These two are being respectively initialised as Input and Output Layers.
         */
     private void initLayers(){
         layers[0] = new InputLayer(inputSize);
+
         for (int layer = 1; layer < layerSizes.length - 1; layer++){
-            layers[layer] = new HiddenLayer(layerSizes[layer]);
+            ActivationFunction activationFunction = layerBluePrints.get(layer).getFunction();
+            layers[layer] = new HiddenLayer(layerSizes[layer],activationFunction);
         }
-        layers[lastLayer] = new OutputLayer(outputSize);
+        ActivationFunction activationFunction = layerBluePrints.get(lastLayer).getFunction();
+        layers[lastLayer] = new OutputLayer(outputSize,activationFunction);
     }
 
 
@@ -74,7 +106,7 @@ public class Network implements VisualizableFullyConnectedNetwork {
     private void initNeurons(){
         Neuron[] inputNeurons = new Neuron[inputSize];
 
-        Arrays.setAll(inputNeurons, i -> new Neuron(0, new double[layerSizes[1]]));
+        Arrays.setAll(inputNeurons, i -> new Neuron(0, new double[layerSizes[1]], null));
 
         layers[0].setNeurons(inputNeurons);
 
@@ -90,7 +122,9 @@ public class Network implements VisualizableFullyConnectedNetwork {
                 double[] inputWeights = new double[sizeOfPrevLayer];
                 randomize1DArray(inputWeights,weightLowerBound,weightUpperBound);
 
-                neurons[neuron] = new Neuron(bias,inputWeights);
+                ActivationFunction activationFunction = layerBluePrints.get(layer).getFunction();
+
+                neurons[neuron] = new Neuron(bias,inputWeights,activationFunction);
             }
             //TODO think if possible to replace it with interfacemethod
            layers[layer].setNeurons(neurons);
@@ -147,5 +181,10 @@ public class Network implements VisualizableFullyConnectedNetwork {
         return Arrays.stream(layers[layer].getNeurons())
                 .mapToDouble(Neuron::getValue)
                 .toArray();
+    }
+
+    @Override
+    public ActivationFunction getActivationFun(int layer) {
+        return layerBluePrints.get(layer).getFunction();
     }
 }

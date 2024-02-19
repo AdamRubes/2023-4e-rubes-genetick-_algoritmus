@@ -127,7 +127,7 @@ public class MainWindowController {
             clientHashMap.put(client.id,client);
         }
 
-        game.startTrainingGame(clientHashMap);
+        game.startTrainingGame(clientHashMap, 0);
     }
 
     @FXML
@@ -248,7 +248,15 @@ public class MainWindowController {
     public int prepSaves(){
         int numOfElitesPrinted;
         if(saveGenomsBox.isSelected()){
-            numOfElitesPrinted = Integer.parseInt(elitesToBeSavedTextField.getText());
+            if (elitesToBeSavedTextField.getText() != ""){
+                numOfElitesPrinted = Integer.parseInt(elitesToBeSavedTextField.getText());
+            }else{
+                System.out.println("invalid");
+                numOfElitesPrinted = 0;
+            }
+
+
+
         }else numOfElitesPrinted = 0;
 
         return numOfElitesPrinted;

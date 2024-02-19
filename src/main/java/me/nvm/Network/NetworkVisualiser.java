@@ -68,12 +68,20 @@ public class NetworkVisualiser extends JPanel {
         int layerSize = structure[currLayer];
         double[] biases = network.getBiases(currLayer);
         double[] values = network.getValues(currLayer);
+        ActivationFunction activationFunction = network.getActivationFun(currLayer);
 
         for (int currNeuron = 0; currNeuron < layerSize; currNeuron++) {
             double bias = biases[currNeuron];
             double value = values[currNeuron];
+            Color color;
+            if (activationFunction instanceof SigmoidFun) color = getColorForValueSigmoid(value);
+            else if (activationFunction instanceof ReLu) color = getColorForValueReLU(value);
+            else{
+                //System.out.println("Divné");
+                color = getColorForValueSigmoid(value);
+            }
 
-            Color color = getColorForValue(value);
+            color = getColorForValueReLU(value);
 
             g.setColor(color);
 
@@ -91,17 +99,43 @@ public class NetworkVisualiser extends JPanel {
         }
     }
 
-    private Color getColorForValue(double value) {
+    private Color getColorForValueReLU(double value) {
         //FIXME něco udělat s normalizací, smazat maximum až se fixne backend
-        double normalizedValue = Math.min(1.0, value);
-        normalizedValue = Math.max(0.0, normalizedValue);
+        double normalizedValue =Math.min(1.0, Math.max(0.0, value));
+        if (normalizedValue != value) {
+            //System.out.println("Error Relu- " + value + "->" + normalizedValue);
+        }
 
-        //if (value != normalizedValue) System.out.println("Value: " + value + " | Normalizováno" + normalizedValue);
-
-        int alpha = (int) (255 * normalizedValue);
         int intensity = (int) (255 * normalizedValue);
-        return new Color(intensity, intensity, intensity, alpha);
+        /*
+        System.out.println("Error ReLU");
+        System.out.println("value" + value);
+        System.out.println("intensity" + intensity);
+
+         */
+        return new Color(intensity, intensity, intensity);
     }
+
+    private Color getColorForValueSigmoid(double value) {
+        //FIXME něco udělat s normalizací, smazat maximum až se fixne backend
+        double normalizedValue = Math.min(1.0, Math.max(0.0, value));
+        if (normalizedValue != value){
+           // System.out.println("Error Sigmoid - " +value+  "->" +normalizedValue );
+        }
+
+        int intensity = (int) (255 * normalizedValue);
+        /*
+            System.out.println("Sigmoid");
+            System.out.println("Value=" + value);
+            System.out.println("Intensity=" + intensity);
+
+         */
+        return new Color(intensity, intensity, intensity);
+    }
+
+
+    
+    
 
     private void drawConnections(Graphics g, int currLayer) {
         int[] structure = network.getLayerSizes();

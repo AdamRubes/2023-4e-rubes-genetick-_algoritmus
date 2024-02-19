@@ -6,6 +6,7 @@ import me.nvm.game.gameobjects.Bird;
 import me.nvm.game.gameobjects.PipePair;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static me.nvm.MainApp.AuxilaryTools.normalizeValue;
 
@@ -17,9 +18,14 @@ public class GameBackendAI extends GameBackendSuper {
 
     int indexOfNextPipe;
 
-    public GameBackendAI(HashMap<Integer, Client> clientHashMap) {
+    int numOfElites;
+
+    HashMap<Integer, Integer> slotVisualisedClient = new HashMap<>();
+
+    public GameBackendAI(HashMap<Integer, Client> clientHashMap, int numOfElites) {
         super();
         this.clientMap = clientHashMap;
+        this.numOfElites = numOfElites;
 
         for (Map.Entry<Integer, Client> clientEntry : this.clientMap.entrySet()) {
             int id = clientEntry.getKey();
@@ -71,7 +77,7 @@ public class GameBackendAI extends GameBackendSuper {
 
             if (bird.coordinateY < 0 || bird.coordinateY > getHeight()) {
                 iterator.remove();
-                //System.out.println("Bird id:" + birdEntry.getKey() + " died");
+                System.out.println("Bird id:" + birdEntry.getKey() + " died");
             } else {
                 for (PipePair element : pipePairs) {
                     if (Math.abs(bird.coordinateX - element.position) < birdRadius + pipeWidth / 2) {
@@ -81,18 +87,64 @@ public class GameBackendAI extends GameBackendSuper {
                         double birdY = bird.coordinateY;
                         if (birdY <= upperYBoundry + birdRadius || birdY >= lowerYBoundry - birdRadius) {
                             iterator.remove();
-                            //System.out.println("Bird id:" + birdEntry.getKey() + " died");
+                            System.out.println("Bird id:" + birdEntry.getKey() + " died");
                         }
                     }
                 }
             }
         }
 
-
+        chooseNetworksToBeVisualised();
         gameState.setNumOfLivingBirds(birdMap.size());
-        if(gameState.getNumOfLivingBirds() <= 0) gameState.setGameOver(true);
+        if(gameState.getNumOfLivingBirds() <= numOfElites) gameState.setGameOver(true);
     }
 
+    private void chooseNetworksToBeVisualised() {
+        List<Integer> firstThreeKeys = null;
+        if (slotVisualisedClient.isEmpty()) {
+            firstThreeKeys = birdMap.keySet().stream()
+                    .limit(3)
+                    .collect(Collectors.toList());
+
+            for (int i = 0; i < firstThreeKeys.size(); i++) {
+                Integer key = firstThreeKeys.get(i);
+                slotVisualisedClient.put(i + 1, key);
+                initVisualisers(i + 1);
+            }
+        }else { // Nesahat velmi křehké
+            for (Integer key : slotVisualisedClient.keySet()) {
+                if (!birdMap.containsKey(slotVisualisedClient.get(key))) {
+                    if(birdMap.size() < 3){
+                        hideVisualiser(key);
+                    }else {
+                        for (Integer newKey : birdMap.keySet()) {
+                            if (!slotVisualisedClient.containsValue(newKey)) {
+                                slotVisualisedClient.put(key, newKey);
+                                replaceVisualisers(key);
+                                break;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        //System.out.println(slotVisualisedClient);
+    }
+
+    public void hideVisualiser(int visualiserToBeHidden){
+        //System.out.println("Hiding visualiser" + visualiserToBeHidden);
+        ((GameGraphicsTraining)gameGraphics).hideVisualiser(visualiserToBeHidden);
+    }
+
+    public void initVisualisers(int keyToBeInited){
+       // System.out.println("Initing visualiser" + keyToBeInited);
+        ((GameGraphicsTraining)gameGraphics).initialiseVisualiser(keyToBeInited, slotVisualisedClient.get(keyToBeInited));
+    }
+
+    public void replaceVisualisers(int keyToBeReplaced){
+        //System.out.println("Replacing visualiser" + keyToBeReplaced);
+        ((GameGraphicsTraining)gameGraphics).setVisualiser(keyToBeReplaced, slotVisualisedClient.get(keyToBeReplaced));
+    }
 
     @Override
     protected void updateBird() {
@@ -134,7 +186,7 @@ public class GameBackendAI extends GameBackendSuper {
                 double[] output = client.compute(inputArr);
                 //System.out.println(client.id + "{output1: " +output[1] + " output2: " +output[1] + "}");
 
-               if (output[0] > output[1] && Math.abs(output[0] - output[1]) > 0.6) birdMap.get(clientEntry.getKey()).jump();
+               if (output[0] > 0.75 && output[1] < 0.2) birdMap.get(clientEntry.getKey()).jump();
 
             }
         }

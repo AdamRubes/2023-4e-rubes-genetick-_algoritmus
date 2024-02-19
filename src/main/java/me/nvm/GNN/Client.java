@@ -2,6 +2,7 @@ package me.nvm.GNN;
 
 import me.nvm.MainApp.UniqueIDGenerator;
 import me.nvm.Network.Network;
+import me.nvm.Network.NetworkBuilder;
 
 
 public class Client implements Comparable<Client> {
@@ -35,7 +36,18 @@ public class Client implements Comparable<Client> {
     public Client(int[] structure) {
         this.id = UniqueIDGenerator.getRandomID();
 
-        this.network = new Network(structure);
+
+
+
+        NetworkBuilder builder = new NetworkBuilder()
+                .setInputLayerSize(structure[0]);
+
+        for (int i = 1; i < structure.length - 1; i++) {
+            builder.addReLULayer(structure[i]);
+        }
+
+        this.network = builder.setOutputLayerSize(structure[structure.length - 1])
+                .build();
 
         this.geneticInfo = GenomProcessor.encodeGenom(network);
     }

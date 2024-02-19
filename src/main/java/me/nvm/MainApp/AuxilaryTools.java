@@ -87,4 +87,16 @@ public class AuxilaryTools {
         if(number == null || number.doubleValue() >= 0) return false;
         return isOk;
     }
+
+    public static ArrayList<Integer> findDifferences(ArrayList<Object> list1, ArrayList<Object> list2) {
+        ArrayList<Integer> differences = new ArrayList<>();
+
+        for (int i = 0; i < list1.size(); i++) {
+            if (!list1.get(i).equals(list2.get(i))) {
+                differences.add(i);
+            }
+        }
+
+        return differences;
+    }
 }

@@ -49,7 +49,7 @@ public class Training extends Thread{
 
             System.out.println("Run:" + i + "/" + numOfRuns);
             System.out.println(clientHashMap);
-            game.startTrainingGame(clientHashMap);
+            game.startTrainingGame(clientHashMap, numOfElites);
             game.waitOnGame();
 
 

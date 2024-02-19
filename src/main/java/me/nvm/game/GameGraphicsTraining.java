@@ -30,6 +30,10 @@ public class GameGraphicsTraining extends JFrame implements GraphicsInterface {
 
     List<NetworkVisualiser> networkVisualisers = new ArrayList<>();
 
+    HashMap<Integer, NetworkVisualiserContainer> visualiserContainerHashMap = new HashMap<>();
+
+    JPanel visualiserBox;
+
     public GameGraphicsTraining(GameBackendAI gameBackendAI, Resolution resolution){
         setWindow(resolution);
 
@@ -52,24 +56,21 @@ public class GameGraphicsTraining extends JFrame implements GraphicsInterface {
 
         makeShitCanvas = new RenderingPanel();
 
+
+
         makeShitCanvas.setLayout(null);
         makeShitCanvas.add(closeButton);
 
-        NetworkVisualiserContainer networkVisualiserContainer = new NetworkVisualiserContainer(0,30,1);
-        NetworkVisualiserContainer networkVisualiserContainer2 = new NetworkVisualiserContainer(0,30,2);
-        NetworkVisualiserContainer networkVisualiserContainer3 = new NetworkVisualiserContainer(0,30,3);
-
-        JPanel visualiserBox = new JPanel();
+        visualiserBox = new JPanel();
         visualiserBox.setOpaque(false);
-        visualiserBox.setBounds(0,40, networkVisualiserContainer.getWidth(), getHeight() - 40);
         visualiserBox.setLayout(new BoxLayout(visualiserBox, BoxLayout.Y_AXIS));
+        visualiserBox.setBounds(0,30,600,getHeight());
 
-        visualiserBox.add(networkVisualiserContainer);
-        visualiserBox.add(networkVisualiserContainer2);
-        visualiserBox.add(networkVisualiserContainer3);
+
+
+
+
         makeShitCanvas.add(visualiserBox);
-
-
         add(makeShitCanvas);
     }
 
@@ -96,6 +97,24 @@ public class GameGraphicsTraining extends JFrame implements GraphicsInterface {
     @Override
     public void setResolution(Resolution resolution) {
         setWindow(resolution);
+
+    }
+
+    public void initialiseVisualiser(int keyOfVisualiser, int keyOfNewClient){
+        System.out.println("inited with:" + keyOfVisualiser);
+        visualiserContainerHashMap.put(keyOfVisualiser, new NetworkVisualiserContainer(0,0,keyOfNewClient));
+        visualiserBox.add(visualiserContainerHashMap.get(keyOfVisualiser));
+        visualiserBox.revalidate();
+    }
+
+    public void setVisualiser(int keyOfVisualiser, int keyOfNewClient){
+        visualiserContainerHashMap.get(keyOfVisualiser).setNewClient(keyOfNewClient);
+    }
+
+    public void hideVisualiser(int visualiserToBeHidden){
+        //FIXME fixnout aby se to furt nevolalo. Není čas opravovat, nezá se být podstatné:D
+        visualiserBox.remove(visualiserContainerHashMap.get(visualiserToBeHidden));
+        visualiserBox.revalidate();
     }
 
     private void setWindow(Resolution resolution){
@@ -103,10 +122,18 @@ public class GameGraphicsTraining extends JFrame implements GraphicsInterface {
         this.frameHeight = resolution.getHeight();
         this.frameWidth = resolution.getWidth();
 
+
+
         setTitle("Flapy Bird");
         setSize(frameWidth, frameHeight);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
+        if (visualiserBox != null){
+            visualiserBox.setBounds(0,30,600,getHeight());
+            visualiserBox.revalidate();
+        }
+
+
         try {
             setUndecorated(true);
         }catch (Exception e){}
@@ -155,95 +182,30 @@ public class GameGraphicsTraining extends JFrame implements GraphicsInterface {
     }
 
     private class NetworkVisualiserContainer extends JPanel{
-        JComboBox<String> comboBox = new JComboBox<>();
+        int keyOfCurrClient;
         NetworkVisualiser networkVisualiser;
-        public NetworkVisualiserContainer(int x, int y, int defaultItem) {
-
-            refreshClients();
-            addListeners();
-
+        public NetworkVisualiserContainer(int x, int y, int keyOfCurrClient) {
             setLayout(null);
             setOpaque(false);
 
-            networkVisualiser = prepVisualiser(gameBackendAI.clientMap.get(getKeyAtPosition(defaultItem)).network);
+            this.keyOfCurrClient = keyOfCurrClient;
+            networkVisualiser = prepVisualiser(gameBackendAI.clientMap.get(keyOfCurrClient).network);
 
-            comboBox.setBounds(0,0,200,30);
-            setBounds(x, y, networkVisualiser.getWidth(),networkVisualiser.getHeight()+40);
+            setBounds(x, y, networkVisualiser.getWidth(),networkVisualiser.getHeight());
 
-            add(comboBox);
             add(networkVisualiser);
         }
 
-        public void refreshClients(){
-            ActionListener[] listeners = comboBox.getActionListeners();
-            for (ActionListener listener : listeners) {
-                comboBox.removeActionListener(listener);
-            }
-
-
-            comboBox.removeAllItems();
-
-
-            birdMap.keySet()
-                    .stream()
-                    .map(integer -> String.valueOf(integer))
-                    .forEach(comboBox::addItem);
-
-
-
-            for (ActionListener listener : listeners) {
-                comboBox.addActionListener(listener);
-            }
-        }
-
-        public static void printComboBoxItems(JComboBox<?> comboBox) {
-            ComboBoxModel<?> model = comboBox.getModel();
-            int size = model.getSize();
-            for (int i = 0; i < size; i++) {
-                Object item = model.getElementAt(i);
-                System.out.println(item);
-            }
-        }
-
-        private void addListeners(){
-
-            comboBox.addActionListener(new ActionListener() {
-                public void actionPerformed(ActionEvent e) {
-
-                    int selectedItem = Integer.parseInt((String) comboBox.getSelectedItem());
-
-                    System.out.println("In action listener" + selectedItem);
-                    remove(networkVisualiser);
-                    networkVisualiser = prepVisualiser(gameBackendAI.clientMap.get(selectedItem).network);
-                    add(networkVisualiser);
-                }
-            });
-            comboBox.addPopupMenuListener(new PopupMenuListener() {
-                @Override
-                public void popupMenuWillBecomeVisible(PopupMenuEvent e) {
-                    refreshClients();
-                }
-
-                @Override
-                public void popupMenuWillBecomeInvisible(PopupMenuEvent e) {}
-                @Override
-                public void popupMenuCanceled(PopupMenuEvent e) {}
-
-            });
+        public void setNewClient(int keyOfCurrClient){
+            remove(networkVisualiser);
+            networkVisualiser = prepVisualiser(gameBackendAI.clientMap.get(keyOfCurrClient).network);
+            add(networkVisualiser);
         }
 
         private NetworkVisualiser prepVisualiser(VisualizableFullyConnectedNetwork network){
             NetworkVisualiser nv = new NetworkVisualiser(network);
-            nv.setBounds(0,30,nv.calculateWidth(),nv.calculateHeight());
+            nv.setBounds(0,0,nv.calculateWidth(),nv.calculateHeight());
             return nv;
-        }
-
-
-        public int getKeyAtPosition(int position) {
-            Set<Integer> keySet = gameBackendAI.clientMap.keySet();
-                Integer[] keysArray = keySet.toArray(new Integer[]{});
-                return keysArray[position];
-
         }
     }
 }

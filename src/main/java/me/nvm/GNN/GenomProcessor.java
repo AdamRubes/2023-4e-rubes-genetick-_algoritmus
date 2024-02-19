@@ -1,6 +1,7 @@
 package me.nvm.GNN;
 
 import me.nvm.Network.Network;
+import me.nvm.Network.NetworkBuilder;
 import me.nvm.Network.Neuron;
 
 import java.io.*;
@@ -22,7 +23,16 @@ public class GenomProcessor {
         int[] structure = geneticInfo.structure;
         double[] genom = geneticInfo.genom;
 
-        Network network = new Network(structure);
+
+        NetworkBuilder builder = new NetworkBuilder()
+                .setInputLayerSize(structure[0]);
+
+        for (int i = 1; i < structure.length - 1; i++) {
+            builder.addReLULayer(structure[i]);
+        }
+
+        Network network = builder.setOutputLayerSize(structure[structure.length - 1])
+                .build();
 
         int numberOfBiases = numOfBiases(structure);
         int numberOfWeights = numOfWeights(structure);

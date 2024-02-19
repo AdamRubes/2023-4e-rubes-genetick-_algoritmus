@@ -3,6 +3,8 @@ package me.nvm.GNN;
 
 import me.nvm.MainApp.AuxilaryTools;
 
+import java.util.Arrays;
+
 public class GenomHybridizer {
     public static GeneticInfo uniformCrossover(GeneticInfo geneticInfo1, GeneticInfo geneticInfo2){
 
@@ -10,8 +12,10 @@ public class GenomHybridizer {
         double[] genom2 = geneticInfo2.genom;
 
 
-        if (geneticInfo1.structure != geneticInfo2.structure){
+        if (!Arrays.equals(geneticInfo1.structure,geneticInfo2.structure)){
             System.out.println("Rýýýýýýýýýýýýýýýýý");
+            System.out.println(Arrays.toString(geneticInfo1.structure));
+            System.out.println(Arrays.toString(geneticInfo2.structure));
             return null;
         }
 

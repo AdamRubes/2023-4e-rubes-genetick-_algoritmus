@@ -65,6 +65,7 @@ public class InputLayer implements Layer {
     public String toString() {
         return "\r\n" + "InputLayer{" +
                 "size=" + getSize() +
+                ", AF=nemá AF"  +
                 ", isLinked= " + (nextLayer != null) +
                 '}'
                 ;

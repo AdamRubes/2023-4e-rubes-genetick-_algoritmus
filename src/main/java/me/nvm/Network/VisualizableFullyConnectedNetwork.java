@@ -10,4 +10,6 @@ public interface VisualizableFullyConnectedNetwork {
 
     public double[] getValues(int layer);
 
+    public ActivationFunction getActivationFun(int layer);
+
 }

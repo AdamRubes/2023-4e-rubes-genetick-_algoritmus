@@ -4,15 +4,17 @@ package me.nvm.Network;
 import java.util.Arrays;
 
 public class HiddenLayer implements Layer {
+    public ActivationFunction activationFunction;
     public int size;
     public Neuron[] neurons;
     Layer prevLayer;
     Layer nextLayer;
     public double[] outputValues;
 
-    public HiddenLayer(int size) {
+    public HiddenLayer(int size, ActivationFunction activationFunction) {
         this.size = size;
         outputValues = new double[size];
+        this.activationFunction = activationFunction;
     }
 
     @Override
@@ -52,6 +54,7 @@ public class HiddenLayer implements Layer {
     public String toString() {
         return "\r\n" + "HiddenLayer{" +
                 "size=" + size +
+                ", AF=" + activationFunction.toString() +
                 ", isLinked= " + (prevLayer!= null && nextLayer != null) +
                 ", neurons=" + Arrays.toString(neurons) +
                 '}';

@@ -7,12 +7,12 @@ public class Neuron {
     public double bias;
     public double value;
 
-    public Neuron(double bias, double[] inputWeights) {
+    public Neuron(double bias, double[] inputWeights, ActivationFunction function) {
         this.inputWeights = inputWeights;
         this.bias = bias;
         this.value = 0;
         this.numOfConn = inputWeights.length;
-        this.activationFunction = new ReLu();
+        this.activationFunction = function;
     }
     public void compute(double[] inputValues) {
         double sum = 0;
