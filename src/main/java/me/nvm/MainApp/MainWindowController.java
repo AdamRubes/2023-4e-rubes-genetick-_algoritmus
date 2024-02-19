@@ -4,6 +4,9 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.scene.Group;
+import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.DirectoryChooser;
@@ -16,6 +19,7 @@ import me.nvm.GNN.GeneticInfo;
 import me.nvm.game.Game;
 import me.nvm.game.GameState;
 import org.controlsfx.control.ListSelectionView;
+import org.controlsfx.control.action.Action;
 
 
 import java.io.File;
@@ -46,7 +50,6 @@ public class MainWindowController {
 
     @FXML
     private CheckBox saveGenomsBox;
-
 
     @FXML
     private TextField numElitesTextField;
@@ -265,8 +268,10 @@ public class MainWindowController {
     }
 
     public void initialize() {
+
         JMetro jMetro = new JMetro(Style.DARK);
         jMetro.setParent(toBeStyled);
+
 
         FolderHolder.autoInitFile();
 
@@ -291,5 +296,9 @@ public class MainWindowController {
         );
 
         gameSpeedBox.setValue(1.0);
+
+        System.out.println(clientList.getActions().get(0).getGraphic());
+
+
     }
 }
