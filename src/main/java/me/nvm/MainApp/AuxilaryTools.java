@@ -67,7 +67,7 @@ public class AuxilaryTools {
             for (Path path : directoryStream) {
                 if (Files.isRegularFile(path)) {
                     fileNamesList.add(path.getFileName().toString());
-                    System.out.println(path.getFileName().toString());
+                    //System.out.println(path.getFileName().toString());
                 }
             }
         } catch (IOException e) {

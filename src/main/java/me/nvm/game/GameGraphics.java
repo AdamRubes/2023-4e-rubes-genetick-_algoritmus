@@ -48,6 +48,8 @@ public class GameGraphics extends JFrame implements GraphicsInterface {
     @Override
     public void showWindow() {
         setVisible(true);
+        toFront();
+        requestFocus();
     }
     @Override
     public void refresh(){
@@ -68,7 +70,7 @@ public class GameGraphics extends JFrame implements GraphicsInterface {
         this.frameHeight = resolution.getHeight();
         this.frameWidth = resolution.getWidth();
 
-        setTitle("Flapy Bird");
+        setTitle("Flappy Bird");
         setSize(frameWidth, frameHeight);
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setResizable(false);
@@ -83,7 +85,8 @@ public class GameGraphics extends JFrame implements GraphicsInterface {
         ActionMap actionMap = makeShitCanvas.getActionMap();
 
         inputMap.put(KeyStroke.getKeyStroke("SPACE"), "jumpAction");
-        actionMap.put("jumpAction", new AbstractAction() {
+
+            actionMap.put("jumpAction", new AbstractAction() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 gameBackend.userJumped = true;

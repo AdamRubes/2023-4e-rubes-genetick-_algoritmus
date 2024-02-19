@@ -56,6 +56,7 @@ public abstract class GameBackendSuper extends Thread{
     public void gameLoop() {
         gameGraphics.showWindow();
 
+
         lastTime = System.nanoTime();
         lastFPSTime = System.nanoTime();
 
