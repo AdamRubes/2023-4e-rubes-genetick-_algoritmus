@@ -61,7 +61,7 @@ public class TrainingBuilder {
         }
         if (structure == null) {
             throw new IllegalStateException("Structure is not set");
-        }else if (structure[0] != 4 || structure[structure.length - 1] != 2){
+        }else if (structure[0] != 4 || structure[structure.length - 1] != 1){
             throw new IllegalStateException("Structure[0] must == 4 and structure[structure.length] == 2");
         }
         if (AuxilaryTools.isNegative(numOfElites)) {

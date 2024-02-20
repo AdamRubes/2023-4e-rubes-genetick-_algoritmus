@@ -9,6 +9,7 @@ import me.nvm.game.gameobjects.Bird;
 import me.nvm.game.gameobjects.PipePair;
 
 import javax.swing.*;
+import javax.swing.border.Border;
 import javax.swing.event.PopupMenuEvent;
 import javax.swing.event.PopupMenuListener;
 import java.awt.*;
@@ -31,6 +32,7 @@ public class GameGraphicsTraining extends JFrame implements GraphicsInterface {
     List<NetworkVisualiser> networkVisualisers = new ArrayList<>();
 
     HashMap<Integer, NetworkVisualiserContainer> visualiserContainerHashMap = new HashMap<>();
+    HashMap<Integer, Bird> birdsToBeColored = new HashMap<>();
 
     JPanel visualiserBox;
 
@@ -103,17 +105,37 @@ public class GameGraphicsTraining extends JFrame implements GraphicsInterface {
     public void initialiseVisualiser(int keyOfVisualiser, int keyOfNewClient){
         System.out.println("inited with:" + keyOfVisualiser);
         visualiserContainerHashMap.put(keyOfVisualiser, new NetworkVisualiserContainer(0,0,keyOfNewClient));
+
+        setBorderColor(keyOfVisualiser);
+
+        birdsToBeColored.put(keyOfVisualiser,birdMap.get(keyOfNewClient));
         visualiserBox.add(visualiserContainerHashMap.get(keyOfVisualiser));
         visualiserBox.revalidate();
     }
 
     public void setVisualiser(int keyOfVisualiser, int keyOfNewClient){
+        birdsToBeColored.put(keyOfVisualiser,birdMap.get(keyOfNewClient));
+
         visualiserContainerHashMap.get(keyOfVisualiser).setNewClient(keyOfNewClient);
+        setBorderColor(keyOfVisualiser);
+    }
+
+    public void setBorderColor(int keyOfVisualiser){
+        Border border = null;
+        if (keyOfVisualiser == 1){
+            border = BorderFactory.createLineBorder(Color.MAGENTA);
+        } else if (keyOfVisualiser == 2) {
+            border = BorderFactory.createLineBorder(Color.YELLOW);
+        } else if (keyOfVisualiser == 3) {
+            border = BorderFactory.createLineBorder(Color.GREEN);
+        }
+        visualiserContainerHashMap.get(keyOfVisualiser).networkVisualiser.setBorder(border);
     }
 
     public void hideVisualiser(int visualiserToBeHidden){
         //FIXME fixnout aby se to furt nevolalo. Není čas opravovat, nezá se být podstatné:D
         visualiserBox.remove(visualiserContainerHashMap.get(visualiserToBeHidden));
+        birdsToBeColored.remove(visualiserToBeHidden);
         visualiserBox.revalidate();
     }
 
@@ -121,8 +143,6 @@ public class GameGraphicsTraining extends JFrame implements GraphicsInterface {
         this.scale = resolution.scaleFromSD;
         this.frameHeight = resolution.getHeight();
         this.frameWidth = resolution.getWidth();
-
-
 
         setTitle("Flapy Bird");
         setSize(frameWidth, frameHeight);
@@ -151,21 +171,24 @@ public class GameGraphicsTraining extends JFrame implements GraphicsInterface {
             setBackground(Color.BLACK);
 
             synchronized (birdMap) {
+
+
+
+
                 for (Map.Entry<Integer, Bird> birdEntry : birdMap.entrySet()) {
                     Bird bird = birdEntry.getValue();
+                    if (!birdsToBeColored.containsValue(bird)) {
+                        g.setColor(Color.RED);
+                        paintBird(g, bird);
+                    }
+                }
 
-                    g.setColor(Color.RED);
-                    g.fillRect((int) ((bird.coordinateX - (birdWidth / 2)) * scale), (int) ((bird.coordinateY - (birdHeight / 2)) * scale), (int) (birdWidth * scale), (int) (birdHeight * scale));
+                for (Map.Entry<Integer, Bird> birdEntry : birdsToBeColored.entrySet()) {
+                    Bird bird = birdEntry.getValue();
 
-                    g.setColor(Color.BLUE);
-                    int circleRadius = 25;
-                    g.fillOval((int) ((bird.coordinateX - circleRadius) * scale), (int) ((bird.coordinateY - (birdHeight / 2)) * scale), (int) ((circleRadius * 2) * scale), (int) ((circleRadius * 2) * scale));
+                    g.setColor(getBirdColor(bird));
 
-                    g.setColor(Color.BLACK);
-                    String keyText = String.valueOf(birdEntry.getKey());
-                    int textX = (int) ((bird.coordinateX - (birdWidth / 2)) * scale) + 5;
-                    int textY = (int) ((bird.coordinateY - (birdHeight / 2)) * scale) + 15;
-                    g.drawString(keyText, textX, textY);
+                    paintBird(g, bird);
                 }
             }
 
@@ -179,6 +202,34 @@ public class GameGraphicsTraining extends JFrame implements GraphicsInterface {
                 }
             }
         }
+
+        private void paintBird(Graphics g, Bird bird) {
+            g.fillRect((int) ((bird.coordinateX - (birdWidth / 2)) * scale), (int) ((bird.coordinateY - (birdHeight / 2)) * scale), (int) (birdWidth * scale), (int) (birdHeight * scale));
+
+            g.setColor(Color.BLUE);
+            int circleRadius = 25;
+            g.fillOval((int) ((bird.coordinateX - circleRadius) * scale), (int) ((bird.coordinateY - (birdHeight / 2)) * scale), (int) ((circleRadius * 2) * scale), (int) ((circleRadius * 2) * scale));
+
+            g.setColor(Color.BLACK);
+
+            /*
+            String keyText = String.valueOf(birdEntry.getKey());
+            int textX = (int) ((bird.coordinateX - (birdWidth / 2)) * scale) + 5;
+            int textY = (int) ((bird.coordinateY - (birdHeight / 2)) * scale) + 15;
+            g.drawString(keyText, textX, textY);
+
+             */
+        }
+
+        private Color getBirdColor(Bird bird) {
+            if (birdsToBeColored.get(1) == bird) return Color.MAGENTA;
+            else if (birdsToBeColored.get(2) == bird) return Color.YELLOW;
+            else if (birdsToBeColored.get(3) == bird) return Color.GREEN;
+            else return Color.RED;
+        }
+
+
+
     }
 
     private class NetworkVisualiserContainer extends JPanel{
@@ -187,6 +238,8 @@ public class GameGraphicsTraining extends JFrame implements GraphicsInterface {
         public NetworkVisualiserContainer(int x, int y, int keyOfCurrClient) {
             setLayout(null);
             setOpaque(false);
+
+
 
             this.keyOfCurrClient = keyOfCurrClient;
             networkVisualiser = prepVisualiser(gameBackendAI.clientMap.get(keyOfCurrClient).network);

@@ -1,7 +1,9 @@
 package me.nvm.game;
 
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.IntegerProperty;
+import javafx.beans.property.SimpleBooleanProperty;
 import javafx.beans.property.SimpleIntegerProperty;
 
 public class GameState {
@@ -11,6 +13,8 @@ public class GameState {
     public IntegerProperty numOfLivingBirdsProperty;
     private double lenght;
     private boolean isGameOver;
+
+    public BooleanProperty isGameRunning = new SimpleBooleanProperty(false);
     private double deltaTime;
     private double gravity;
     private double speed;
@@ -22,6 +26,7 @@ public class GameState {
 
     private GameState() {
         this.isGameOver = false;
+        this.isGameRunning.set(false);
         this.score = 0;
         this.scoreProperty = new SimpleIntegerProperty(this, "value", 0);
         this.deltaTime = 0.0;
@@ -38,6 +43,8 @@ public class GameState {
 
         this.lenght = 0;
         this.isGameOver = false;
+        this.isGameRunning.set(false);
+
         this.deltaTime = 0.0;
 
         this.numOfLivingBirds = 0;
@@ -97,6 +104,10 @@ public class GameState {
     }
 
     public void setGameOver(boolean gameOver) {
+        Platform.runLater(() -> {
+            if(gameOver) isGameRunning.set(false);
+        });
+
         isGameOver = gameOver;
     }
 

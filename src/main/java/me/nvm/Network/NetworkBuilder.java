@@ -11,7 +11,7 @@ public class NetworkBuilder {
     }
 
     public NetworkBuilder setOutputLayerSize(int outputSize){
-        addSigmoidLayer(outputSize);
+        addReLULayer(outputSize);
         return this;
     }
 

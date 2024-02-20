@@ -1,5 +1,7 @@
 package me.nvm.MainApp;
 
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import me.nvm.GNN.Client;
 import me.nvm.GNN.GeneticAlgorithm;
 import me.nvm.game.Game;
@@ -17,8 +19,9 @@ public class Training extends Thread{
     int numOfRuns;
     double mutationStrength;
     double mutationRate;
-
     int numOfElitesPrinted;
+
+    DoubleProperty progress =  new SimpleDoubleProperty(0.0);
 
     public Training(int sizeOfGeneration, int[] structure, int numOfElites, int numOfRuns, double mutationStrength, double mutationRate, Game game, int numOfElitesPrinted) {
         this.sizeOfGeneration = sizeOfGeneration;
@@ -47,8 +50,9 @@ public class Training extends Thread{
         stopTraining = false;
         for (int i = 0; i < numOfRuns; i++){
 
+
             System.out.println("Run:" + i + "/" + numOfRuns);
-            System.out.println(clientHashMap);
+
             game.startTrainingGame(clientHashMap, numOfElites);
             game.waitOnGame();
 
@@ -61,8 +65,17 @@ public class Training extends Thread{
                 clientHashMap.put(client.id, client);
             }
 
+            updateProgress(i);
+
             if(stopTraining) break;
         }
+    }
+
+    public void updateProgress(int currRun){
+        double d1 = currRun +1;
+        double d2 = numOfRuns;
+
+        progress.setValue(d1/d2);
     }
 
     public void stopAfterCurrLoop(){

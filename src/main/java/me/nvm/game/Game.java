@@ -1,5 +1,8 @@
 package me.nvm.game;
 
+import javafx.application.Platform;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import me.nvm.GNN.Client;
 import me.nvm.MainApp.Resolution;
 import me.nvm.Network.NetworkVisualiser;
@@ -15,6 +18,8 @@ public class Game {
     boolean isHeadless;
     Resolution resolution;
 
+    public StringProperty engineFPS = new SimpleStringProperty("NaN");
+    public StringProperty uiFPS = new SimpleStringProperty("NaN");
 
     public Game(double gravity, double speed, double powerOfJump, int sizeOfHole, int sizeOfGaps, boolean isHeadless, double speedMultiplier, Resolution resolution) {
         this.isHeadless = isHeadless;
@@ -24,6 +29,14 @@ public class Game {
         this.gameState = GameState.getInstance(gravity, speed, powerOfJump, sizeOfHole, sizeOfGaps);
     }
 
+    public StringProperty getEngineFPS(){
+        return mainBackend.engineFPS;
+    }
+
+    public StringProperty getUIFPS(){
+        return mainBackend.uiFPS;
+    }
+
     public void startPlayerGameReworked(){
         restartReworked();
         mainBackend = new GameBackendPlayer();
@@ -31,6 +44,10 @@ public class Game {
         mainGraphics = new GameGraphics((GameBackendPlayer) mainBackend, resolution);
         mainBackend.linkToGraphics(mainGraphics);
 
+        Platform.runLater(() -> {
+                    engineFPS.bind(getEngineFPS());
+                    uiFPS.bind(getUIFPS());
+                });
         mainBackend.start();
     }
 
@@ -45,6 +62,11 @@ public class Game {
 
         mainGraphics = gameGraphicsTraining;
         mainBackend.linkToGraphics(mainGraphics);
+        Platform.runLater(() -> {
+            engineFPS.bind(getEngineFPS());
+            uiFPS.bind(getUIFPS());
+        });
+
 
         mainBackend.start();
     }

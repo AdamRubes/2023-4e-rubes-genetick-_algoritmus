@@ -27,8 +27,6 @@ public class NetworkVisualiser extends JPanel {
         this.network = network;
         this.structure = network.getLayerSizes();
         setOpaque(false);
-        Border border = new LineBorder(Color.RED, 2);
-        //setBorder(border);
     }
 
     public int calculateWidth(){
@@ -90,10 +88,19 @@ public class NetworkVisualiser extends JPanel {
             int borderWidth = 5;
             g2d.setStroke(new BasicStroke(borderWidth));
 
-            g.fillOval(x, y - (layerSize / 2 * gapBetweenNeurons) + currNeuron * gapBetweenNeurons, neuronDiameter, neuronDiameter);
+            if ((layerSize%2) ==0){
+                g.fillOval(x, y - (layerSize / 2 * gapBetweenNeurons) + currNeuron * gapBetweenNeurons, neuronDiameter, neuronDiameter);
 
-            g.setColor(getColorForWeight1(bias));
-            g.drawOval(x, y - (layerSize / 2 * gapBetweenNeurons) + currNeuron * gapBetweenNeurons, neuronDiameter, neuronDiameter);
+                g.setColor(getColorForWeight1(bias));
+                g.drawOval(x, y - (layerSize / 2 * gapBetweenNeurons) + currNeuron * gapBetweenNeurons, neuronDiameter, neuronDiameter);
+
+            }else {
+                g.fillOval(x, (int) (y - (((layerSize / 2) + 0.5) * gapBetweenNeurons) + currNeuron * gapBetweenNeurons), neuronDiameter, neuronDiameter);
+
+                g.setColor(getColorForWeight1(bias));
+                g.drawOval(x, (int) (y -(((layerSize / 2) + 0.5)  *  gapBetweenNeurons) + currNeuron * gapBetweenNeurons), neuronDiameter, neuronDiameter);
+            }
+
 
             g2d.setStroke(new BasicStroke(1));
         }
@@ -158,9 +165,27 @@ public class NetworkVisualiser extends JPanel {
 
                 Color color = getColorForWeight1(weight);
                 g.setColor(color);
+                int x1 = fromX + neuronDiameter;
+                int x2 = toX;
+                int y1;
+                int y2;
 
-                g.drawLine(fromX + neuronDiameter, getHeight() / 2 - (weights[0].length / 2 * gapBetweenNeurons) + fromNeuron * gapBetweenNeurons + neuronDiameter / 2,
-                        toX, getHeight() / 2 - (weights.length / 2 * gapBetweenNeurons) + toNeuron * gapBetweenNeurons + neuronDiameter / 2);
+                if ((fromLayerSize % 2) == 0) {
+                    y1 = getHeight() / 2 - (weights[0].length / 2 * gapBetweenNeurons) + fromNeuron * gapBetweenNeurons + neuronDiameter / 2;
+                }else {
+                    y1 = (int) (getHeight() / 2 - (((weights[0].length / 2) + 0.5) * gapBetweenNeurons) + fromNeuron * gapBetweenNeurons + neuronDiameter / 2);
+                }
+
+
+                if ((toLayerSize%2) == 0){
+                    y2 = getHeight() / 2 - (weights.length / 2 * gapBetweenNeurons) + toNeuron * gapBetweenNeurons + neuronDiameter / 2;
+                }else {
+                    y2 = (int) (getHeight() / 2 - (((weights.length / 2) + 0.5) * gapBetweenNeurons) + toNeuron * gapBetweenNeurons + neuronDiameter / 2);
+                }
+
+
+                g.drawLine(x1, y1, x2, y2);
+
             }
         }
     }

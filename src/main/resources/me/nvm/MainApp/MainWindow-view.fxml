@@ -4,44 +4,24 @@
 <?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ProgressBar?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 <?import org.controlsfx.control.ListSelectionView?>
 
-<AnchorPane fx:id="MainPane" prefHeight="610.0" prefWidth="750.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.nvm.MainApp.MainWindowController">
+<AnchorPane fx:id="MainPane" prefHeight="610.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1" fx:controller="me.nvm.MainApp.MainWindowController">
    <children>
-      <AnchorPane fx:id="toBeStyled" prefHeight="610.0" prefWidth="750.0" styleClass="myBackground" stylesheets="@protectiveStyleSheet.css">
+      <AnchorPane fx:id="toBeStyled" prefHeight="610.0" prefWidth="800.0" styleClass="myBackground2" stylesheets="@protectiveStyleSheet.css">
          <children>
-            <AnchorPane layoutX="14.0" layoutY="405.0" prefHeight="91.0" prefWidth="149.0">
-               <children>
-                  <Label fx:id="scoreLabel" layoutX="90.0" text="NaN">
-                     <font>
-                        <Font size="30.0" />
-                     </font>
-                  </Label>
-                  <Label fx:id="birdsLabel" layoutX="90.0" layoutY="45.0" text="NaN">
-                     <font>
-                        <Font size="30.0" />
-                     </font>
-                  </Label>
-                  <Label text="Score: ">
-                     <font>
-                        <Font size="30.0" />
-                     </font>
-                  </Label>
-                  <Label layoutY="45.0" text="Birds: ">
-                     <font>
-                        <Font size="30.0" />
-                     </font>
-                  </Label>
-               </children>
-            </AnchorPane>
-            <AnchorPane layoutX="550.0" layoutY="405.0" prefHeight="200.0" prefWidth="200.0">
+            <AnchorPane layoutX="160.0" layoutY="420.0" prefHeight="160.0" prefWidth="200.0">
                <children>
                   <Label layoutX="37.0" layoutY="-1.0" text="Game settings">
                      <font>
@@ -55,12 +35,19 @@
                   <CheckBox fx:id="headlessCheck" layoutX="13.0" layoutY="132.0" mnemonicParsing="false" text="Headless" />
                </children>
             </AnchorPane>
-            <TabPane layoutY="1.0" prefHeight="404.0" prefWidth="750.0" tabClosingPolicy="UNAVAILABLE">
+            <TabPane layoutY="1.0" prefHeight="405.0" prefWidth="800.0" styleClass="myBackground" tabClosingPolicy="UNAVAILABLE">
               <tabs>
                 <Tab text="Training">
                   <content>
                         <HBox alignment="TOP_CENTER">
                            <children>
+                              <VBox alignment="CENTER" prefHeight="200.0" prefWidth="200.0" spacing="10.0">
+                                 <children>
+                                    <Label style="-fx-font-size: 20;" text="Training Progres" />
+                                    <ProgressBar fx:id="runsProgrssBar" prefWidth="200.0" progress="0.0" />
+                                    <ProgressBar fx:id="currRunProgressBar" prefWidth="200.0" />
+                                 </children>
+                              </VBox>
                               <AnchorPane prefHeight="340.0" prefWidth="335.0">
                                  <children>
                                     <Label layoutX="56.0" style="-fx-font-size: 30;" text="Training Controls">
@@ -133,7 +120,7 @@
                                                 <VBox prefHeight="45.0" prefWidth="100.0">
                                                    <children>
                                                       <Label text="Structure of NN" />
-                                                      <TextField fx:id="structureTextField" prefWidth="150.0" text="4,4,4,2" />
+                                                      <TextField fx:id="structureTextField" prefWidth="150.0" text="4,3,4,1" />
                                                    </children>
                                                 </VBox>
                                              </children>
@@ -142,6 +129,10 @@
                                     </HBox>
                                  </children>
                               </AnchorPane>
+                              <VBox prefHeight="200.0" prefWidth="200.0">
+                                 <children>
+                                    <TextArea editable="false" prefHeight="370.0" prefWidth="200.0" />
+                                 </children></VBox>
                            </children>
                         </HBox>
                   </content>
@@ -150,7 +141,7 @@
                   <content>
                     <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
                            <children>
-                              <VBox alignment="TOP_CENTER" prefHeight="375.0" prefWidth="750.0" spacing="10.0">
+                              <VBox alignment="TOP_CENTER" prefHeight="375.0" prefWidth="800.0" spacing="10.0">
                                  <children>
                                     <HBox prefHeight="20.0" prefWidth="430.0" />
                                     <HBox alignment="CENTER" prefHeight="28.0" prefWidth="430.0" spacing="10.0">
@@ -166,12 +157,19 @@
                                     </VBox>
                                     <HBox alignment="CENTER" prefHeight="238.0" prefWidth="750.0">
                                        <children>
+                                          <AnchorPane prefHeight="200.0" prefWidth="200.0" />
                                           <ListSelectionView fx:id="clientList" prefHeight="230.0" prefWidth="640.0" stylesheets="@protectiveStyleSheet.css" />
+                                          <AnchorPane prefHeight="200.0" prefWidth="200.0">
+                                             <children>
+                                                <AnchorPane layoutY="39.0" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color: MAGENTA;" />
+                                                <AnchorPane layoutY="71.0" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color: YELLOW;" />
+                                                <AnchorPane layoutY="103.0" prefHeight="25.0" prefWidth="25.0" style="-fx-background-color: LIGHTGREEN;" />
+                                             </children>
+                                          </AnchorPane>
                                        </children>
                                     </HBox>
-                                    <HBox prefHeight="31.0" prefWidth="430.0">
+                                    <HBox alignment="CENTER" prefHeight="31.0" prefWidth="430.0">
                                        <children>
-                                          <HBox prefHeight="31.0" prefWidth="60.0" />
                                           <Button mnemonicParsing="false" onAction="#StartLoadedGameOnAction" prefHeight="25.0" prefWidth="188.0" style="-fx-background-color: #0A9D0A;" text="Start game with choosen clients" textOverrun="CLIP" wrapText="true" />
                                        </children>
                                     </HBox>
@@ -187,7 +185,7 @@
                            <children>
                               <VBox alignment="CENTER" prefHeight="375.0" prefWidth="750.0" spacing="10.0">
                                  <children>
-                                    <Label prefHeight="35.0" prefWidth="132.0" text="Game Controls">
+                                    <Label prefHeight="45.0" style="-fx-font-size: 30;" text="Game Controls" textAlignment="CENTER">
                                        <font>
                                           <Font size="20.0" />
                                        </font>
@@ -208,6 +206,55 @@
                   </Tab>
               </tabs>
             </TabPane>
+            <HBox alignment="CENTER" layoutX="382.0" layoutY="419.0" prefHeight="147.0" prefWidth="418.0" spacing="10.0">
+               <children>
+                  <VBox alignment="CENTER_LEFT" prefHeight="147.0" prefWidth="171.0" spacing="17.0">
+                     <children>
+                        <Label styleClass="neuronLabels" text="Birds Y coordinate" />
+                        <Label styleClass="neuronLabels" text="Distance to the next pipe" />
+                        <Label styleClass="neuronLabels" text="Upper pipe Y coordinate" />
+                        <Label styleClass="neuronLabels" text="Bottom pipe Y coordinate" />
+                     </children>
+                  </VBox>
+                  <ImageView fitHeight="147.0" fitWidth="245.0" pickOnBounds="true" preserveRatio="true">
+                     <image>
+                        <Image url="@NN.png" />
+                     </image>
+                  </ImageView>
+               </children>
+            </HBox>
+            <AnchorPane layoutX="10.0" layoutY="420.0" prefHeight="90.0" prefWidth="155.0">
+               <children>
+                  <Label fx:id="birdsLabel" layoutX="90.0" layoutY="45.0" text="NaN">
+                     <font>
+                        <Font size="30.0" />
+                     </font>
+                  </Label>
+                  <Label text="Score: ">
+                     <font>
+                        <Font size="30.0" />
+                     </font>
+                  </Label>
+                  <Label layoutY="45.0" text="Birds: ">
+                     <font>
+                        <Font size="30.0" />
+                     </font>
+                  </Label>
+                  <Label fx:id="scoreLabel" layoutX="90.0" text="NaN">
+                     <font>
+                        <Font size="30.0" />
+                     </font>
+                  </Label>
+               </children>
+            </AnchorPane>
+            <AnchorPane layoutX="5.0" layoutY="575.0" prefHeight="35.0" prefWidth="155.0">
+               <children>
+                  <Label text="Engine frequency:" />
+                  <Label layoutY="15.0" text="UI frequency:" />
+                  <Label fx:id="engineFPSLabel" layoutX="105.0" text="NaN" />
+                  <Label fx:id="uiFPSLabel" layoutX="105.0" layoutY="15.0" text="NaN" />
+               </children>
+            </AnchorPane>
          </children>
       </AnchorPane>
    </children>

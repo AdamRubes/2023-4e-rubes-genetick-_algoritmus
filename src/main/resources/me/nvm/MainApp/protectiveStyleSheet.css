@@ -1,9 +1,11 @@
-
-.list-selection-view .grid-pane .button .label {
-
-
+.neuronLabels{
+    -fx-font-size: 15;
 }
 
 .myBackground{
     -fx-background-color:  #1D1D1D;
+}
+
+.myBackground2{
+    -fx-background-color:  #1A1A1A;
 }

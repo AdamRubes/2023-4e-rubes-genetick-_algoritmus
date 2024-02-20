@@ -21,7 +21,7 @@ public class MainApp extends Application {
 
 
 
-        stage.setTitle("Hello!");
+        stage.setTitle("UwU");
         stage.setScene(scene);
         stage.show();
     }

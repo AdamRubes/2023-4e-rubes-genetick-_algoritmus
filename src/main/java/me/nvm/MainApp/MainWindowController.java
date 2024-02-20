@@ -61,6 +61,11 @@ public class MainWindowController {
     private Label birdsLabel;
 
     @FXML
+    private Label engineFPSLabel;
+    @FXML
+    private Label uiFPSLabel;
+
+    @FXML
     private TextField numRunsTextField;
 
     @FXML
@@ -90,10 +95,15 @@ public class MainWindowController {
     @FXML
     private Label pathLabel;
 
+    @FXML
+    private ProgressBar currRunProgressBar;
+    @FXML
+    private ProgressBar runsProgrssBar;
+
 
     @FXML
     void startGameOnAction(ActionEvent event) {
-        game = prepareGame();
+        prepareGame();
         game.startPlayerGameReworked();
     }
 
@@ -110,7 +120,7 @@ public class MainWindowController {
 
     @FXML
     void StartLoadedGameOnAction(ActionEvent event) {
-        game = prepareGame();
+        prepareGame();
 
         if(clientList.getTargetItems().isEmpty()){
             return;
@@ -170,7 +180,7 @@ public class MainWindowController {
  */
 
         System.out.println(numOfElitesPrinted);
-        game = prepareGame();
+        prepareGame();
 
         //ToDo ukládání genomů regulace
 
@@ -185,17 +195,22 @@ public class MainWindowController {
                 .linkAddGameObject(game)
                 .build();
 
+        runsProgrssBar.progressProperty().bind(training.progress);
+
+
         training.start();
     }
 
-    public Game prepareGame(){
+    public void prepareGame(){
 
-        return new GameBuilder()
+        game = new GameBuilder()
                 .setPredefinedRules()
                 .setHeadless(headlessCheck.isSelected())
                 .setSpeedMultiplier(gameSpeedBox.getValue())
                 .setResolution(gameResolutionBox.getValue())
                 .build();
+
+        bindFPSCounters();
     }
 
     @FXML
@@ -217,7 +232,9 @@ public class MainWindowController {
 
     @FXML
     void stopNowTrainingOnAction(ActionEvent event) {
-        training.stopTrainingNow();
+        if (training != null){
+            training.stopTrainingNow();
+        }
     }
 
     @FXML
@@ -254,9 +271,6 @@ public class MainWindowController {
                 System.out.println("invalid");
                 numOfElitesPrinted = 0;
             }
-
-
-
         }else numOfElitesPrinted = 0;
 
         return numOfElitesPrinted;
@@ -275,6 +289,11 @@ public class MainWindowController {
         clientList.getSourceItems().addAll(observableClientSourceLabels);
     }
 
+    public void bindFPSCounters(){
+        engineFPSLabel.textProperty().bind(game.engineFPS);
+        uiFPSLabel.textProperty().bind(game.uiFPS);
+    }
+
     public void initialize() {
 
         JMetro jMetro = new JMetro(Style.DARK);
@@ -291,6 +310,10 @@ public class MainWindowController {
         scoreLabel.textProperty().bind(gameState.scoreProperty.asString());
 
         birdsLabel.textProperty().bind(gameState.numOfLivingBirdsProperty.asString());
+
+        currRunProgressBar.visibleProperty().bind(gameState.isGameRunning);
+
+
 
         refreshList();
 

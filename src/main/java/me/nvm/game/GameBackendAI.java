@@ -77,7 +77,7 @@ public class GameBackendAI extends GameBackendSuper {
 
             if (bird.coordinateY < 0 || bird.coordinateY > getHeight()) {
                 iterator.remove();
-                System.out.println("Bird id:" + birdEntry.getKey() + " died");
+                //System.out.println("Bird id:" + birdEntry.getKey() + " died");
             } else {
                 for (PipePair element : pipePairs) {
                     if (Math.abs(bird.coordinateX - element.position) < birdRadius + pipeWidth / 2) {
@@ -87,7 +87,7 @@ public class GameBackendAI extends GameBackendSuper {
                         double birdY = bird.coordinateY;
                         if (birdY <= upperYBoundry + birdRadius || birdY >= lowerYBoundry - birdRadius) {
                             iterator.remove();
-                            System.out.println("Bird id:" + birdEntry.getKey() + " died");
+                            //System.out.println("Bird id:" + birdEntry.getKey() + " died");
                         }
                     }
                 }
@@ -186,7 +186,7 @@ public class GameBackendAI extends GameBackendSuper {
                 double[] output = client.compute(inputArr);
                 //System.out.println(client.id + "{output1: " +output[1] + " output2: " +output[1] + "}");
 
-               if (output[0] > 0.75 && output[1] < 0.2) birdMap.get(clientEntry.getKey()).jump();
+               if (output[0] > 0.5) birdMap.get(clientEntry.getKey()).jump();
 
             }
         }

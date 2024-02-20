@@ -42,6 +42,7 @@ public class GameBackendPlayer extends GameBackendSuper{
                 double birdY = bird.coordinateY;
                 if (birdY <= upperYBoundry + birdRadius || birdY >= lowerYBoundry - birdRadius) {
                     gameState.setGameOver(true);
+
                 }
             }
         }

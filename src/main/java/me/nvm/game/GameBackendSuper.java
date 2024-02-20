@@ -1,5 +1,10 @@
 package me.nvm.game;
 
+import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.beans.property.StringProperty;
 import me.nvm.MainApp.Resolution;
 import me.nvm.game.GameGraphicsTraining;
 import me.nvm.game.GameState;
@@ -9,7 +14,7 @@ import java.util.*;
 
 import static me.nvm.MainApp.AuxilaryTools.getRandomNumber;
 
-public abstract class GameBackendSuper extends Thread{
+public abstract class GameBackendSuper extends Thread {
     GameState gameState;
     GraphicsInterface gameGraphics;
 
@@ -18,8 +23,10 @@ public abstract class GameBackendSuper extends Thread{
     protected final Resolution mainBackendResolution = Resolution.SD;
 
     private long lastTime; // Time in nanos of last rendered frame.
-    private final double TARGET_FPS = 130; // How many times should the game "refresh" or "check" conditions per second
-    long graphicalFPS = 30;
+
+    //TODO automatické vyvažování FPS podle zrychlení hry
+    private final double TARGET_FPS = 60; // How many times should the game "refresh" or "check" conditions per second
+    long graphicalFPS = 60;
     private final double OPTIMAL_TIME = 1e9 / TARGET_FPS; // How much nanos for each game loop to sustain target FPS
     private int frames = 0; // How many gameloops/frames has been
     private long lastFPSTime; // Time in nanos of last rendered frame. Used in computations for FPS measuring.
@@ -38,13 +45,18 @@ public abstract class GameBackendSuper extends Thread{
 
     long refreshInterval = (long) (1e9 / graphicalFPS);
 
+    long frameCountUI = 0;
+    long lastFPSTimeUI = System.currentTimeMillis();
+    StringProperty engineFPS = new SimpleStringProperty("NaN");
+    StringProperty uiFPS = new SimpleStringProperty("NaN");
+
     public GameBackendSuper() {
         this.gameState = GameState.getInstance();
         System.out.println(getPriority());
         setPriority(7);
     }
 
-    public void linkToGraphics(GraphicsInterface gameGraphics){
+    public void linkToGraphics(GraphicsInterface gameGraphics) {
         this.gameGraphics = gameGraphics;
     }
 
@@ -63,6 +75,7 @@ public abstract class GameBackendSuper extends Thread{
         int a = getRandomNumber(minUpper, maxUpper);
         pipePairs.add(new PipePair(a, ((getHeight() - a) - gameState.getSizeOfHole()), getWidth()));
 
+        gameState.isGameRunning.set(true);
 
         while (!gameState.isGameOver()) {
             long now = System.nanoTime(); // Time when the curr loop started
@@ -73,22 +86,25 @@ public abstract class GameBackendSuper extends Thread{
             gameState.setDeltaTime(delta * speedMultiplier);
 
 
-                handleInput();
+            handleInput();
 
-                update();
-                pipeLifecycle();
+            update();
+            pipeLifecycle();
 
-                checkCollisions();
+            checkCollisions();
 
-                if(gameState.isGameOver()) break;
+            if (gameState.isGameOver()) break;
 
-                pointCounter();
-            if(graphicalFPS == TARGET_FPS) gameGraphics.refresh();
-            else if (now - lastRefreshTime >= refreshInterval) {
-                    gameGraphics.refresh();
-                    lastRefreshTime = now;
-                }
+            pointCounter();
 
+            if (graphicalFPS == TARGET_FPS) {
+                gameGraphics.refresh();
+                frameCountUI++;
+            } else if (now - lastRefreshTime >= refreshInterval) {//FIXME není optimální ztrácá fps jen tak kvůli podmínce
+                frameCountUI++;
+                gameGraphics.refresh();
+                lastRefreshTime = now;
+            }
 
 
             long loopTime = System.nanoTime() - now; // How much time did the game-loop take
@@ -101,10 +117,25 @@ public abstract class GameBackendSuper extends Thread{
                 }
             }
 
+
+            if (now - lastFPSTimeUI >= 1000000000) {
+                int framesTbD = (int) frameCountUI;
+                Platform.runLater(() -> {
+                    uiFPS.set(String.valueOf(framesTbD));
+                });
+                frameCountUI = 0;
+                lastFPSTimeUI = now;
+            }
+
             frames++;
 
-            if (now - lastFPSTime >= 1000000000) { // One second has passed
-                System.out.println("FPS: " + frames);
+            if (now - lastFPSTime >= 1000000000) {
+
+                int framesTbD = frames;
+                Platform.runLater(() -> {
+                    engineFPS.set(String.valueOf(framesTbD));
+                });
+
                 frames = 0;
                 lastFPSTime = now;
             }
@@ -115,20 +146,27 @@ public abstract class GameBackendSuper extends Thread{
     }
 
     protected abstract void pointCounter();
+
     protected abstract void checkCollisions();
+
     protected abstract void updateBird();
+
     protected abstract void handleInput();
 
-    protected void updatePipes(){
+    protected void updatePipes() {
         for (PipePair element : pipePairs) {
             element.move();
         }
     }
-    protected void update(){
+
+    protected void update() {
         updateBird();
         updatePipes();
-    };
-    protected void pipeLifecycle(){
+    }
+
+    ;
+
+    protected void pipeLifecycle() {
         double lenghtNow = gameState.getLenght();
 
         if (lenghtNow - lastPipeLenght < -gameState.getSizeOfGaps()) {
@@ -142,20 +180,23 @@ public abstract class GameBackendSuper extends Thread{
         }
 
         gameState.setLenght((lenghtNow + (gameState.getSpeed() * gameState.getDeltaTime())));
-    };
+    }
 
-    public void setSpeedMultiplier(double speedMultiplier){
+    ;
+
+    public void setSpeedMultiplier(double speedMultiplier) {
         this.speedMultiplier = speedMultiplier;
     }
 
-    public double getSpeedMultiplier(){
+    public double getSpeedMultiplier() {
         return speedMultiplier;
     }
 
-    public int getWidth(){
+    public int getWidth() {
         return mainBackendResolution.getWidth();
     }
-    public int getHeight(){
+
+    public int getHeight() {
         return mainBackendResolution.getHeight();
     }
 }
