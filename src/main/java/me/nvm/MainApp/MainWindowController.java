@@ -295,7 +295,6 @@ public class MainWindowController {
     }
 
     public void initialize() {
-
         JMetro jMetro = new JMetro(Style.DARK);
         jMetro.setParent(toBeStyled);
 
@@ -323,7 +322,7 @@ public class MainWindowController {
         gameResolutionBox.setValue(Resolution.SD);
 
         gameSpeedBox.getItems().addAll(
-                0.1, 0.5, 1.0, 1.5, 2.0, 4.0, 8.0, 12.0, 24.0, 48.0
+                0.1, 0.5, 1.0, 1.5, 2.0, 4.0, 8.0, 12.0, 24.0
         );
 
         gameSpeedBox.setValue(1.0);

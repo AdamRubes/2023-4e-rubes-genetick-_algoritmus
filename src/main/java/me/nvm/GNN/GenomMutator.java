@@ -8,7 +8,7 @@ public class GenomMutator {
     // Range 0-1
     double mutationRate;
     double mutationStrength;
-
+    @Deprecated
     public GenomMutator() {
         this.mutationRate = 0.08;
         this.mutationStrength = 0.07;

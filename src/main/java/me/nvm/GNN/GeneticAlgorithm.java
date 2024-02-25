@@ -12,6 +12,7 @@ public class GeneticAlgorithm {
     Client[] elite;
     GenomMutator genomMutator;
 
+    @Deprecated
     public GeneticAlgorithm() {
         this.numOfElite = 10;
         this.elite = new Client[numOfElite];

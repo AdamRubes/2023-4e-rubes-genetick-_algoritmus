@@ -62,10 +62,7 @@ public class Network implements VisualizableFullyConnectedNetwork {
         initLayers();
         initNeurons();
         linkLayers();
-
-
-
-
+        
     }
 
     public void setInput(double[] input){
