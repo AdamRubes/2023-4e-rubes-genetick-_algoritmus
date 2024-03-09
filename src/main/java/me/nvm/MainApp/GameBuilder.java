@@ -63,9 +63,6 @@ public class GameBuilder {
 
     public Game build(){
 
-
-
-
         Game game = new Game(gravity, speed, powerOfJump, sizeOfHole, sizeOfGaps, isHeadless, speedMultiplier, resolution);
         return game;
     }

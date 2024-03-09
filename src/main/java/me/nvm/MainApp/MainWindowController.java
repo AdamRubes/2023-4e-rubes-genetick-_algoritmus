@@ -16,7 +16,10 @@ import jfxtras.styles.jmetro.JMetro;
 import jfxtras.styles.jmetro.Style;
 import me.nvm.GNN.Client;
 import me.nvm.GNN.GeneticInfo;
+import me.nvm.GNN.GenomProcessor;
+import me.nvm.Network.Network;
 import me.nvm.game.Game;
+import me.nvm.game.GameNetworkVisualiser;
 import me.nvm.game.GameState;
 import org.controlsfx.control.ListSelectionView;
 import org.controlsfx.control.action.Action;
@@ -30,6 +33,7 @@ import static me.nvm.GNN.GenomProcessor.loadGenom;
 import static me.nvm.MainApp.AuxilaryTools.getFilenamesInDirectory;
 
 public class MainWindowController {
+
     Game game;
 
     Training training;
@@ -62,6 +66,7 @@ public class MainWindowController {
 
     @FXML
     private Label engineFPSLabel;
+
     @FXML
     private Label uiFPSLabel;
 
@@ -90,16 +95,22 @@ public class MainWindowController {
     private ListSelectionView<Label> clientList;
 
     @FXML
+    private ListSelectionView<Label> clientListVisualise;
+
+    @FXML
     private CheckBox headlessCheck;
 
     @FXML
     private Label pathLabel;
 
     @FXML
+    private Label pathLabel1;
+
+    @FXML
     private ProgressBar currRunProgressBar;
+
     @FXML
     private ProgressBar runsProgrssBar;
-
 
     @FXML
     void startGameOnAction(ActionEvent event) {
@@ -145,6 +156,13 @@ public class MainWindowController {
         clientList.getSourceItems().clear();
         clientList.getTargetItems().clear();
         refreshList();
+    }
+
+    @FXML
+    void refreshListVisualiseOnAction(ActionEvent event) {
+        clientListVisualise.getSourceItems().clear();
+        clientListVisualise.getTargetItems().clear();
+        refreshListVisualise();
     }
 
     @FXML
@@ -249,7 +267,6 @@ public class MainWindowController {
     @FXML
     void resolutionChanged(ActionEvent event) {if (game != null)  game.changeResolution(gameResolutionBox.getValue());}
 
-
     @FXML
     public void changeDirectoryOnAction(){
         DirectoryChooser directoryChooser = new DirectoryChooser();
@@ -261,6 +278,33 @@ public class MainWindowController {
         refreshList();
     }
 
+    @FXML
+    public void changeDirectoryVisualiseOnAction(){
+        DirectoryChooser directoryChooser = new DirectoryChooser();
+        directoryChooser.setInitialDirectory(FolderHolder.USER_HOME);
+
+        FolderHolder.customFolder = directoryChooser.showDialog(new Stage());
+        pathLabel1.setText(FolderHolder.customFolder.getPath());
+
+        refreshListVisualise();
+    }
+
+    @FXML
+    public void startVisualisation(){
+        if(clientListVisualise.getTargetItems().isEmpty()){
+            return;
+        }
+
+        Label label = clientListVisualise.getTargetItems().get(0);
+        String name = label.getText();
+        GeneticInfo geneticInfo = loadGenom(FolderHolder.customFolder.getAbsolutePath()+"/" + name);
+        Network network = GenomProcessor.decodeGenom(geneticInfo);
+
+        GameNetworkVisualiser gameNetworkVisualiser = new GameNetworkVisualiser(Resolution.SD, network);
+
+        gameNetworkVisualiser.setVisible(true);
+        gameNetworkVisualiser.repaint();
+    }
 
     public int prepSaves(){
         int numOfElitesPrinted;
@@ -289,6 +333,19 @@ public class MainWindowController {
         clientList.getSourceItems().addAll(observableClientSourceLabels);
     }
 
+    public void refreshListVisualise(){
+        List<String> clientSource = getFilenamesInDirectory(FolderHolder.customFolder.getPath());
+        clientSource.remove("forGitUwU");
+
+        ObservableList<Label> observableClientSourceLabels = FXCollections.observableArrayList();
+
+        for (String fileName : clientSource) {
+            Label label = new Label(fileName);
+            observableClientSourceLabels.add(label);
+        }
+        clientListVisualise.getSourceItems().addAll(observableClientSourceLabels);
+    }
+
     public void bindFPSCounters(){
         engineFPSLabel.textProperty().bind(game.engineFPS);
         uiFPSLabel.textProperty().bind(game.uiFPS);
@@ -298,11 +355,10 @@ public class MainWindowController {
         JMetro jMetro = new JMetro(Style.DARK);
         jMetro.setParent(toBeStyled);
 
-
         FolderHolder.autoInitFile();
 
         pathLabel.setText(FolderHolder.customFolder.getPath());
-
+        pathLabel1.setText(FolderHolder.customFolder.getPath());
 
         GameState gameState = GameState.getInstance();
 
@@ -312,9 +368,8 @@ public class MainWindowController {
 
         currRunProgressBar.visibleProperty().bind(gameState.isGameRunning);
 
-
-
         refreshList();
+        refreshListVisualise();
 
         gameResolutionBox.getItems().addAll(
                 Resolution.nHD, Resolution.SD, Resolution.FHD, Resolution.WQHD, Resolution.UHD_4K
@@ -322,13 +377,9 @@ public class MainWindowController {
         gameResolutionBox.setValue(Resolution.SD);
 
         gameSpeedBox.getItems().addAll(
-                0.1, 0.5, 1.0, 1.5, 2.0, 4.0, 8.0, 12.0, 24.0
+                0.1, 0.5, 1.0, 1.5, 2.0, 4.0, 8.0, 12.0
         );
 
         gameSpeedBox.setValue(1.0);
-
-        System.out.println(clientList.getActions().get(0).getGraphic());
-
-
     }
 }

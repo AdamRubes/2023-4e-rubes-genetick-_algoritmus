@@ -200,6 +200,42 @@
                         </AnchorPane>
                      </content>
                   </Tab>
+                  <Tab text="Visualise">
+                    <content>
+                      <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="180.0" prefWidth="200.0">
+                           <children>
+                              <VBox alignment="TOP_CENTER" prefHeight="375.0" prefWidth="800.0" spacing="10.0">
+                                 <children>
+                                    <HBox prefHeight="20.0" prefWidth="430.0" />
+                                    <HBox alignment="CENTER" prefHeight="28.0" prefWidth="430.0" spacing="10.0">
+                                       <children>
+                                          <Button mnemonicParsing="false" onAction="#refreshListVisualiseOnAction" text="Refresh List" />
+                                          <Button mnemonicParsing="false" onAction="#changeDirectoryVisualiseOnAction" text="ChangeDirectory" />
+                                       </children>
+                                    </HBox>
+                                    <VBox alignment="CENTER" prefHeight="10.0" prefWidth="430.0">
+                                       <children>
+                                          <Label fx:id="pathLabel1" prefHeight="17.0" prefWidth="247.0" text="PATH" textAlignment="CENTER" />
+                                       </children>
+                                    </VBox>
+                                    <HBox alignment="CENTER" prefHeight="238.0" prefWidth="750.0">
+                                       <children>
+                                          <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+                                          <ListSelectionView fx:id="clientListVisualise" prefHeight="230.0" prefWidth="640.0" stylesheets="@protectiveStyleSheet.css" />
+                                          <AnchorPane prefHeight="200.0" prefWidth="200.0" />
+                                       </children>
+                                    </HBox>
+                                    <HBox alignment="CENTER" prefHeight="31.0" prefWidth="430.0">
+                                       <children>
+                                          <Button mnemonicParsing="false" onAction="#startVisualisation" prefHeight="25.0" prefWidth="188.0" style="-fx-background-color: #0A9D0A;" text="Start Visualisation" textOverrun="CLIP" wrapText="true" />
+                                       </children>
+                                    </HBox>
+                                 </children>
+                              </VBox>
+                           </children>
+                        </AnchorPane>
+                    </content>
+                  </Tab>
               </tabs>
             </TabPane>
             <HBox alignment="CENTER" layoutX="382.0" layoutY="419.0" prefHeight="147.0" prefWidth="418.0" spacing="10.0">

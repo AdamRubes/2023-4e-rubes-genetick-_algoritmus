@@ -187,7 +187,6 @@ public class GameBackendAI extends GameBackendSuper {
                 //System.out.println(client.id + "{output1: " +output[1] + " output2: " +output[1] + "}");
 
                if (output[0] > 0.5) birdMap.get(clientEntry.getKey()).jump();
-
             }
         }
     }
