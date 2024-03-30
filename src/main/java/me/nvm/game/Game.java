@@ -95,7 +95,12 @@ public class Game {
 
     public void changeSpeedOfGame(double speedMultiplier){
         this.speedMultiplier = speedMultiplier;
-        mainBackend.setSpeedMultiplier(this.speedMultiplier);
+        mainBackend.setSpeedMultiplier(this.speedMultiplier);// FIXME zanedbatelný error když vybíráš rychlost před spuštěním hry, chod to neovlivní
+    }
+
+    public boolean isRunning(){
+        if (mainBackend == null) return false;
+        else return mainBackend.isAlive();
     }
 
 

@@ -13,14 +13,5 @@ public class Main {
     //Do not use -> Use instead MainApp
     public static void main(String[] args) {
         MainApp.main(args);
-/*
-        GameNetworkVisualiser gameNetworkVisualiser = new GameNetworkVisualiser(Resolution.SD);
-
-        gameNetworkVisualiser.setVisible(true);
-
-        gameNetworkVisualiser.repaint();
-
- */
-
     }
 }

@@ -114,6 +114,10 @@ public class MainWindowController {
 
     @FXML
     void startGameOnAction(ActionEvent event) {
+        if(game.isRunning()){
+            System.out.println("Hra bezi");
+            return;
+        }
         prepareGame();
         game.startPlayerGameReworked();
     }
@@ -131,6 +135,10 @@ public class MainWindowController {
 
     @FXML
     void StartLoadedGameOnAction(ActionEvent event) {
+        if(game.isRunning()){
+            System.out.println("Hra bezi");
+            return;
+        }
         prepareGame();
 
         if(clientList.getTargetItems().isEmpty()){
@@ -167,6 +175,11 @@ public class MainWindowController {
 
     @FXML
     void startTrainingOnAction(ActionEvent event) {
+        if(game.isRunning()){
+            System.out.println("Hra bezi");
+            return;
+        }
+
         int sizeOfGeneration = Integer.parseInt(sizeGenerationTextField.getText());
         int numberOfElites = Integer.parseInt(numElitesTextField.getText());
         int numberOfRuns = Integer.parseInt(numRunsTextField.getText());
@@ -368,6 +381,8 @@ public class MainWindowController {
 
         currRunProgressBar.visibleProperty().bind(gameState.isGameRunning);
 
+
+
         refreshList();
         refreshListVisualise();
 
@@ -377,9 +392,11 @@ public class MainWindowController {
         gameResolutionBox.setValue(Resolution.SD);
 
         gameSpeedBox.getItems().addAll(
-                0.1, 0.5, 1.0, 1.5, 2.0, 4.0, 8.0, 12.0
+                0.1, 0.5, 1.0, 1.5, 2.0, 4.0
         );
 
         gameSpeedBox.setValue(1.0);
+
+        prepareGame();
     }
 }
